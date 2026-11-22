@@ -1,0 +1,47 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'kr.onradio.player'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId 'kr.onradio.player'
+        minSdk 26
+        targetSdk 35
+        versionCode 17
+        versionName '1.6.13'
+        testInstrumentationRunner 'kr.onradio.player.CarBrowserProbe'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    sourceSets {
+        main.assets.srcDir(layout.buildDirectory.dir('generated/radioAssets').get().asFile)
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.debug
+        }
+    }
+    testBuildType 'release'
+}
+
+tasks.register('copyRadioCatalog', Copy) {
+    from rootProject.file('../catalog.json'), rootProject.file('../licenses/ShazamIO-core-MIT.txt'),
+         rootProject.file('../licenses/ShazamIO-MIT.txt'), rootProject.file('../licenses/NeoDunggeunmo-OFL.txt'),
+         rootProject.file('../assets/retro-grain.png'), rootProject.file('../assets/neodgm.ttf')
+    into layout.buildDirectory.dir('generated/radioAssets')
+}
+tasks.named('preBuild').configure { dependsOn 'copyRadioCatalog' }
+
+dependencies {
+    implementation 'androidx.media3:media3-exoplayer:1.8.0'
+    implementation 'androidx.media3:media3-exoplayer-hls:1.8.0'
+    implementation 'androidx.media3:media3-session:1.8.0'
+}
