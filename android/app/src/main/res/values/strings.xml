@@ -4,7 +4,7 @@
     <string name="language">Language</string>
     <string name="system_language">System default</string>
     <string name="press_to_start">Press Play to start.</string>
-    <string name="app_name">OnRadio</string>
+    <string name="app_name">Roadwave</string>
     <string name="browse_folders">Browse music folders</string>
     <string name="choose_folder">Choose folder…</string>
     <string name="open_files">Open audio files…</string>
@@ -33,7 +33,7 @@
     <string name="fav_tip">Limit SEEK and SCAN to favorites in the selected country.</string>
     <string name="display_tip">Switch the LCD between station and track details.</string>
     <string name="favorites">Favorites</string>
-    <string name="loading_app">Loading OnRadio…</string>
+    <string name="loading_app">Loading Roadwave…</string>
     <string name="previous_channel">Previous station</string>
     <string name="next_channel">Next station</string>
     <string name="recall_channel">Last station</string>

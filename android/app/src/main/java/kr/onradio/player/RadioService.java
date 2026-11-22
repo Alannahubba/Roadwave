@@ -172,7 +172,7 @@ public final class RadioService extends MediaLibraryService implements Player.Li
                     .build();
             }
         };
-        var http = new DefaultHttpDataSource.Factory().setUserAgent("OnRadio/1.0")
+        var http = new DefaultHttpDataSource.Factory().setUserAgent("Roadwave/1.0")
             .setConnectTimeoutMs(10_000).setReadTimeoutMs(15_000).setAllowCrossProtocolRedirects(true);
         player = new ExoPlayer.Builder(this, renderers)
             .setMediaSourceFactory(new DefaultMediaSourceFactory(new DefaultDataSource.Factory(this, http)))

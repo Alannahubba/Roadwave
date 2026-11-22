@@ -45,5 +45,5 @@ if ($TestApk) { $tasks += ':app:assembleReleaseAndroidTest' }
 if ($LASTEXITCODE -ne 0) { throw 'Android build or lint check failed.' }
 $release = Join-Path $root 'release'
 New-Item -ItemType Directory -Force -Path $release | Out-Null
-Copy-Item -LiteralPath "$stagedProject/app/build/outputs/apk/release/app-release.apk" -Destination "$release/OnRadio-Android.apk" -Force
-Write-Output "$release/OnRadio-Android.apk"
+Copy-Item -LiteralPath "$stagedProject/app/build/outputs/apk/release/app-release.apk" -Destination "$release/Roadwave-Android.apk" -Force
+Write-Output "$release/Roadwave-Android.apk"

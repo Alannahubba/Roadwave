@@ -1,4 +1,4 @@
-<section id="onradio-retro" aria-label="온라디오 복고풍 디자인 시안">
+<section id="roadwave-retro" aria-label="로드웨이브 복고풍 디자인 시안">
   <div class="ratios" role="group" aria-label="화면 비율">
     <button type="button" class="cursor-interaction" data-ratio="wide" aria-pressed="true">EV6 참고 · 8:3</button>
     <button type="button" class="cursor-interaction" data-ratio="compact" aria-pressed="false">일반 가로 · 16:9</button>
@@ -6,7 +6,7 @@
   <div class="stage" data-size="wide">
     <div class="car">
       <header class="bezel">
-        <b class="brand">온라디오</b>
+        <b class="brand">로드웨이브</b>
         <span class="slot" aria-hidden="true"></span>
         <span class="lamp" aria-hidden="true"></span>
       </header>
@@ -31,22 +31,22 @@
   </div>
 </section>
 <style>
-  #onradio-retro {
+  #roadwave-retro {
     color: #f1f1ec;
     font: 14px/1.35 system-ui, "Malgun Gothic", sans-serif;
     --lime: #d9ef69;
     --chrome: #555b63;
   }
-  #onradio-retro * { box-sizing: border-box; }
-  #onradio-retro .ratios { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
-  #onradio-retro button { font: inherit; color: inherit; min-height: 44px; }
-  #onradio-retro .ratios button {
+  #roadwave-retro * { box-sizing: border-box; }
+  #roadwave-retro .ratios { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  #roadwave-retro button { font: inherit; color: inherit; min-height: 44px; }
+  #roadwave-retro .ratios button {
     padding: 0 13px; border-radius: 7px; border: 1px solid var(--chrome); background: #202329;
   }
-  #onradio-retro .ratios [aria-pressed="true"] { color: #222d13; border-color: var(--lime); background: var(--lime); }
-  #onradio-retro .stage { container-type: inline-size; margin-inline: auto; }
-  #onradio-retro .stage[data-size="compact"] { max-width: 704px; }
-  #onradio-retro .car {
+  #roadwave-retro .ratios [aria-pressed="true"] { color: #222d13; border-color: var(--lime); background: var(--lime); }
+  #roadwave-retro .stage { container-type: inline-size; margin-inline: auto; }
+  #roadwave-retro .stage[data-size="compact"] { max-width: 704px; }
+  #roadwave-retro .car {
     display: flex; flex-direction: column; justify-content: center; gap: 12px;
     padding: clamp(12px, 2.1cqi, 22px);
     border: 1px solid var(--chrome); border-radius: 16px;
@@ -54,23 +54,23 @@
     box-shadow: inset 0 2px 0 #ffffff15, inset 0 -5px 0 #07080b;
     aspect-ratio: 8 / 3;
   }
-  #onradio-retro [data-size="compact"] .car { aspect-ratio: 16 / 9; }
-  #onradio-retro .bezel { display: flex; align-items: center; gap: 15px; }
-  #onradio-retro .brand { font-size: 16px; white-space: nowrap; color: #d0d1d5; }
-  #onradio-retro .slot {
+  #roadwave-retro [data-size="compact"] .car { aspect-ratio: 16 / 9; }
+  #roadwave-retro .bezel { display: flex; align-items: center; gap: 15px; }
+  #roadwave-retro .brand { font-size: 16px; white-space: nowrap; color: #d0d1d5; }
+  #roadwave-retro .slot {
     height: 9px; flex: 1; border-radius: 4px; border: 1px solid #494d54;
     background: linear-gradient(#050609, #15181e);
     box-shadow: inset 0 2px 2px #000;
   }
-  #onradio-retro .lamp { height: 6px; width: 15px; border-radius: 2px; background: #444a48; }
-  #onradio-retro [data-playing="true"] .lamp { background: var(--lime); box-shadow: 0 0 9px #d9ef6977; }
-  #onradio-retro .deck { display: grid; grid-template-columns: 1.17fr minmax(0, 1fr); gap: 12px; }
-  #onradio-retro .receiver, #onradio-retro .presets {
+  #roadwave-retro .lamp { height: 6px; width: 15px; border-radius: 2px; background: #444a48; }
+  #roadwave-retro [data-playing="true"] .lamp { background: var(--lime); box-shadow: 0 0 9px #d9ef6977; }
+  #roadwave-retro .deck { display: grid; grid-template-columns: 1.17fr minmax(0, 1fr); gap: 12px; }
+  #roadwave-retro .receiver, #roadwave-retro .presets {
     min-width: 0; display: grid; align-content: start; gap: 9px;
     padding: clamp(9px, 1.6cqi, 16px);
     background: #131519; border: 1px solid #41454b; border-radius: 9px;
   }
-  #onradio-retro .screen {
+  #roadwave-retro .screen {
     display: grid; align-content: center; gap: 8px; min-height: 113px;
     padding: clamp(9px, 1.5cqi, 16px);
     border: 5px solid #090b0b; border-radius: 7px; color: #273814;
@@ -79,33 +79,33 @@
     box-shadow: 0 0 0 1px #626857, inset 0 2px 5px #52682680;
     font-family: "Cascadia Mono", Consolas, "Malgun Gothic", monospace;
   }
-  #onradio-retro .tuner {
+  #roadwave-retro .tuner {
     display: flex; justify-content: space-between; gap: 8px;
     font-size: 13px; font-weight: 600;
   }
-  #onradio-retro .station { font-size: clamp(21px, 3.9cqi, 38px); font-weight: 700; overflow-wrap: anywhere; line-height: 1.1; }
-  #onradio-retro .transport, #onradio-retro .bands { display: flex; gap: 6px; }
-  #onradio-retro .transport .key, #onradio-retro .bands .key { flex: 1; }
-  #onradio-retro .key {
+  #roadwave-retro .station { font-size: clamp(21px, 3.9cqi, 38px); font-weight: 700; overflow-wrap: anywhere; line-height: 1.1; }
+  #roadwave-retro .transport, #roadwave-retro .bands { display: flex; gap: 6px; }
+  #roadwave-retro .transport .key, #roadwave-retro .bands .key { flex: 1; }
+  #roadwave-retro .key {
     background: linear-gradient(#3a3e45, #202228 54%, #181a20);
     border: 1px solid #545961; border-radius: 5px; padding: 4px 7px;
     box-shadow: inset 0 1px 0 #ffffff18, inset 0 -2px 0 #08090b;
   }
-  #onradio-retro .key:active { box-shadow: inset 0 2px 4px #08090b; }
-  #onradio-retro .key[aria-pressed="true"], #onradio-retro .power {
+  #roadwave-retro .key:active { box-shadow: inset 0 2px 4px #08090b; }
+  #roadwave-retro .key[aria-pressed="true"], #roadwave-retro .power {
     border-color: #87994f; color: #e7f8a2; background: linear-gradient(#424e34, #263020);
   }
-  #onradio-retro .bands .key { font-size: 12px; white-space: nowrap; min-width: 0; padding-inline: 3px; }
-  #onradio-retro .channels { display: grid; gap: 5px; }
-  #onradio-retro .channels .key { text-align: start; padding-inline: 10px; overflow-wrap: anywhere; }
+  #roadwave-retro .bands .key { font-size: 12px; white-space: nowrap; min-width: 0; padding-inline: 3px; }
+  #roadwave-retro .channels { display: grid; gap: 5px; }
+  #roadwave-retro .channels .key { text-align: start; padding-inline: 10px; overflow-wrap: anywhere; }
   @container (width < 630px) {
-    #onradio-retro .deck { grid-template-columns: 1fr; }
-    #onradio-retro .screen { min-height: 92px; }
+    #roadwave-retro .deck { grid-template-columns: 1fr; }
+    #roadwave-retro .screen { min-height: 92px; }
   }
 </style>
 <script>
 (() => {
-  const root = document.getElementById("onradio-retro");
+  const root = document.getElementById("roadwave-retro");
   const stage = root.querySelector(".stage");
   const car = root.querySelector(".car");
   const title = root.querySelector("[data-title]");

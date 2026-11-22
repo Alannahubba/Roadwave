@@ -4,7 +4,7 @@
     <string name="language">语言</string>
     <string name="system_language">跟随系统</string>
     <string name="press_to_start">按播放按钮开始。</string>
-    <string name="app_name">OnRadio</string>
+    <string name="app_name">Roadwave</string>
     <string name="browse_folders">浏览音乐文件夹</string>
     <string name="choose_folder">选择文件夹…</string>
     <string name="open_files">打开音频文件…</string>
@@ -33,7 +33,7 @@
     <string name="fav_tip">仅在所选国家的收藏电台中使用 SEEK 和 SCAN。</string>
     <string name="display_tip">切换 LCD 上的电台信息和曲目信息。</string>
     <string name="favorites">收藏</string>
-    <string name="loading_app">正在启动 OnRadio…</string>
+    <string name="loading_app">正在启动 Roadwave…</string>
     <string name="previous_channel">上一电台</string>
     <string name="next_channel">下一电台</string>
     <string name="recall_channel">上次收听的电台</string>

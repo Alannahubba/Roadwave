@@ -1,8 +1,8 @@
-# OnRadio for Android
+# Roadwave for Android
 
-Listen to internet radio and play music stored on your phone. OnRadio supports favorites, six presets, background playback, a sleep timer, and Android Auto.
+Listen to internet radio and play music stored on your phone. Roadwave supports favorites, six presets, background playback, a sleep timer, and Android Auto.
 
-Choose **Settings → Language** to use English, Korean, Japanese, or Simplified Chinese. On Android 13 or later, the same language preference is available in the system settings for OnRadio.
+Choose **Settings → Language** to use English, Korean, Japanese, or Simplified Chinese. On Android 13 or later, the same language preference is available in the system settings for Roadwave.
 
 ## Build
 
@@ -10,11 +10,11 @@ With JDK 17 or later, Android SDK 36, and Gradle 9.5.0 installed, run `gradle -p
 
 ## Song identification
 
-OnRadio displays track details published by a station when available. The optional **Identify** and **Auto on** controls send a fingerprint of the stream to Shazam. Auto identification starts off, and the app does not use the microphone.
+Roadwave displays track details published by a station when available. The optional **Identify** and **Auto on** controls send a fingerprint of the stream to Shazam. Auto identification starts off, and the app does not use the microphone.
 
 ## License
 
-OnRadio for Android is licensed under [GPL-3.0-only](LICENSE). Third-party components and fonts retain their respective [licenses](licenses/).
+Roadwave for Android is licensed under [GPL-3.0-only](LICENSE). Third-party components and fonts retain their respective [licenses](licenses/).
 
 ## 한국어
 

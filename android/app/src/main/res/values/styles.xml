@@ -1,5 +1,5 @@
 <resources>
-    <style name="OnRadioTheme" parent="android:style/Theme.Material.NoActionBar">
+    <style name="RoadwaveTheme" parent="android:style/Theme.Material.NoActionBar">
         <item name="android:fontFamily">sans</item>
         <item name="android:windowBackground">#111317</item>
         <item name="android:statusBarColor">#111317</item>
