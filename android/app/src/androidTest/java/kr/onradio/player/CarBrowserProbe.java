@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.media.AudioManager;
@@ -15,6 +16,7 @@ import android.media.session.MediaController;
 import android.media.session.PlaybackState;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.LocaleList;
 import android.os.SystemClock;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,24 +30,44 @@ import java.util.concurrent.atomic.AtomicReference;
 /** Exercises the legacy media browser path used by car hosts against the release APK. */
 public final class CarBrowserProbe extends Instrumentation {
     private boolean featuresOnly;
+    private boolean localizationOnly;
 
     @Override public void onCreate(Bundle arguments) {
         super.onCreate(arguments);
         featuresOnly = arguments != null && "true".equals(arguments.getString("featuresOnly"));
+        localizationOnly = arguments != null && "true".equals(arguments.getString("localizationOnly"));
         start();
     }
 
     @Override public void onStart() {
         Bundle result = new Bundle();
         try {
-            runProbe();
-            result.putString("stream", featuresOnly
+            if (localizationOnly) verifyLocalization();
+            else runProbe();
+            result.putString("stream", localizationOnly ? "\nPASS: English, Korean, Japanese and Simplified Chinese resources and station names\n" : featuresOnly
                 ? "\nPASS: car favorites queue and navigation, hidden channels, search and track history\n"
                 : "\nPASS: car playback and queues, shared stations, search, track history, BAND, SCAN, DISP and preset\n");
             finish(Activity.RESULT_OK, result);
         } catch (Throwable failure) {
             result.putString("stream", "\nFAIL: " + android.util.Log.getStackTraceString(failure) + "\n");
             finish(Activity.RESULT_CANCELED, result);
+        }
+    }
+
+    private void verifyLocalization() {
+        String[] tags = {"en", "ko", "ja", "zh-Hans"};
+        String[] settings = {"Settings", "설정", "設定", "设置"};
+        Context target = getTargetContext();
+        for (int i = 0; i < tags.length; i++) {
+            var configuration = new Configuration(target.getResources().getConfiguration());
+            configuration.setLocales(LocaleList.forLanguageTags(tags[i]));
+            Context context = target.createConfigurationContext(configuration);
+            require(context.getString(R.string.language_code).equals(tags[i]), "Wrong resources for " + tags[i]);
+            require(context.getString(R.string.settings).equals(settings[i]), "Settings label missing for " + tags[i]);
+            var stations = RadioCatalog.load(context);
+            require(stations.size() == 102, "Incomplete catalog for " + tags[i]);
+            String expected = tags[i].equals("ko") ? "CBS 음악FM" : "CBS Music FM";
+            require(stations.get(0).name().equals(expected), "Station name missing for " + tags[i]);
         }
     }
 

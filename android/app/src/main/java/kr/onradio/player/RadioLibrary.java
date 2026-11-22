@@ -1,6 +1,7 @@
 package kr.onradio.player;
 
 import android.net.Uri;
+import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.OptIn;
 import androidx.media3.common.C;
@@ -65,11 +66,11 @@ final class RadioLibrary implements MediaLibrarySession.Callback {
         hidden = hiddenNow;
         buttons = List.of(
             new CommandButton.Builder(CommandButton.ICON_UNDEFINED).setCustomIconResId(R.drawable.ic_car_recognize)
-                .setDisplayName("곡 인식").setSessionCommand(RECOGNIZE).build(),
+                .setDisplayName(radio.localizedString(R.string.recognize)).setSessionCommand(RECOGNIZE).build(),
             new CommandButton.Builder(favorite ? CommandButton.ICON_STAR_FILLED : CommandButton.ICON_STAR_UNFILLED)
-                .setDisplayName(favorite ? "즐겨찾기 해제" : "즐겨찾기 추가").setSessionCommand(FAVORITE).build(),
+                .setDisplayName(favorite ? radio.localizedString(R.string.remove_favorite) : radio.localizedString(R.string.add_favorite)).setSessionCommand(FAVORITE).build(),
             new CommandButton.Builder(CommandButton.ICON_BLOCK)
-                .setDisplayName(hiddenNow ? "채널 다시 표시" : "채널 숨기기").setSessionCommand(HIDE).build());
+                .setDisplayName(hiddenNow ? radio.localizedString(R.string.show_station) : radio.localizedString(R.string.hide_station)).setSessionCommand(HIDE).build());
         session.setMediaButtonPreferences(buttons);
     }
 
@@ -95,22 +96,22 @@ final class RadioLibrary implements MediaLibrarySession.Callback {
 
     @Override public ListenableFuture<LibraryResult<MediaItem>> onGetLibraryRoot(MediaLibrarySession session,
             MediaSession.ControllerInfo browser, LibraryParams params) {
-        return Futures.immediateFuture(LibraryResult.ofItem(folder(ROOT, "온라디오"), params));
+        return Futures.immediateFuture(LibraryResult.ofItem(folder(ROOT, radio.localizedString(R.string.app_name)), params));
     }
 
     @Override public ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> onGetChildren(MediaLibrarySession session,
             MediaSession.ControllerInfo browser, String parent, int page, int pageSize, LibraryParams params) {
         var items = new ArrayList<MediaItem>();
         if (ROOT.equals(parent)) {
-            items.add(folder(ALL, "모든 채널"));
-            items.add(folder(COUNTRIES, "국가별 채널"));
-            items.add(folder(FAVORITES, "즐겨찾기"));
+            items.add(folder(ALL, radio.localizedString(R.string.all_stations)));
+            items.add(folder(COUNTRIES, radio.localizedString(R.string.stations_by_country)));
+            items.add(folder(FAVORITES, radio.localizedString(R.string.favorites)));
         } else if (COUNTRIES.equals(parent)) {
             for (int i = 1; i < RadioCatalog.COUNTRY_CODES.length; i++) {
-                items.add(folder(COUNTRY_PREFIX + RadioCatalog.COUNTRY_CODES[i], RadioCatalog.COUNTRIES[i]));
+                items.add(folder(COUNTRY_PREFIX + RadioCatalog.COUNTRY_CODES[i], RadioCatalog.countryName(radio.languageContext(), RadioCatalog.COUNTRY_CODES[i])));
             }
         } else {
-            for (RadioCatalog.Station entry : queue(parent)) items.add(playable(entry, parent));
+            for (RadioCatalog.Station entry : queue(parent)) items.add(playable(radio.languageContext(), entry, parent));
         }
         return childPage(items, page, pageSize, params);
     }
@@ -122,7 +123,7 @@ final class RadioLibrary implements MediaLibrarySession.Callback {
         if (entry == null || !includes(entry, scope)) {
             return Futures.immediateFuture(LibraryResult.ofError(SessionError.ERROR_BAD_VALUE));
         }
-        return Futures.immediateFuture(LibraryResult.ofItem(playable(entry, scope), null));
+        return Futures.immediateFuture(LibraryResult.ofItem(playable(radio.languageContext(), entry, scope), null));
     }
 
     @Override public ListenableFuture<LibraryResult<Void>> onSearch(MediaLibrarySession session,
@@ -134,7 +135,7 @@ final class RadioLibrary implements MediaLibrarySession.Callback {
     @Override public ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> onGetSearchResult(MediaLibrarySession session,
             MediaSession.ControllerInfo browser, String query, int page, int pageSize, LibraryParams params) {
         var result = new ArrayList<MediaItem>();
-        for (RadioCatalog.Station match : matches(query)) result.add(playable(match, ALL));
+        for (RadioCatalog.Station match : matches(query)) result.add(playable(radio.languageContext(), match, ALL));
         return childPage(result, page, pageSize, params);
     }
 
@@ -230,7 +231,7 @@ final class RadioLibrary implements MediaLibrarySession.Callback {
 
     static boolean matchesWords(RadioCatalog.Station entry, String[] words) {
         String keywords = (entry.name() + " " + entry.group() + " " + entry.description() + " "
-            + RadioCatalog.countryName(entry.country())).toLowerCase(Locale.ROOT);
+            + RadioCatalog.countryKeywords(entry.country())).toLowerCase(Locale.ROOT);
         for (String word : words) if (!keywords.contains(word)) return false;
         return true;
     }
@@ -267,9 +268,9 @@ final class RadioLibrary implements MediaLibrarySession.Callback {
             .setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_RADIO_STATIONS).build()).build();
     }
 
-    static MediaItem playable(RadioCatalog.Station entry, String scope) {
+    static MediaItem playable(Context context, RadioCatalog.Station entry, String scope) {
         return new MediaItem.Builder().setMediaId(scopedId(entry.id(), scope)).setMediaMetadata(new MediaMetadata.Builder()
-            .setTitle(entry.name()).setSubtitle(RadioCatalog.countryName(entry.country())).setArtworkUri(RADIO_ARTWORK)
+            .setTitle(entry.name()).setSubtitle(RadioCatalog.countryName(context, entry.country())).setArtworkUri(RADIO_ARTWORK)
             .setIsBrowsable(false).setIsPlayable(true).setMediaType(MediaMetadata.MEDIA_TYPE_RADIO_STATION)
             .build()).build();
     }

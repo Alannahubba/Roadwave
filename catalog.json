@@ -11,7 +11,9 @@
       "url": "https://m-aac.cbs.co.kr/mweb_cbs939/_definst_/cbs939.stream/playlist.m3u8",
       "homepage": "https://www.cbs.co.kr/onair/musicFm",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "name_en": "CBS Music FM",
+      "description_en": "Music and entertainment · Seoul 93.9 MHz"
     },
     {
       "id": "mbc-fm4u",
@@ -23,7 +25,8 @@
       "channel": "mfm",
       "homepage": "https://mini.imbc.com/",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "description_en": "Music and daily life · Seoul 91.9 MHz"
     },
     {
       "id": "kbs-cool",
@@ -35,7 +38,8 @@
       "channel": "25",
       "homepage": "https://radio.kbs.co.kr/",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "description_en": "Popular music · Seoul 89.1 MHz"
     },
     {
       "id": "kbs-classic",
@@ -47,7 +51,8 @@
       "channel": "24",
       "homepage": "https://radio.kbs.co.kr/",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "description_en": "Classical music · Seoul 93.1 MHz"
     },
     {
       "id": "mbc-standard",
@@ -59,7 +64,9 @@
       "channel": "sfm",
       "homepage": "https://mini.imbc.com/",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "name_en": "MBC Standard FM",
+      "description_en": "Talk and music · Seoul 95.9 MHz"
     },
     {
       "id": "kbs-happy",
@@ -71,7 +78,8 @@
       "channel": "22",
       "homepage": "https://radio.kbs.co.kr/",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "description_en": "Music and conversation · Seoul 106.1 MHz"
     },
     {
       "id": "kbs-radio1",
@@ -83,7 +91,9 @@
       "channel": "21",
       "homepage": "https://radio.kbs.co.kr/",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "name_en": "KBS Radio 1",
+      "description_en": "News and current affairs · Seoul 97.3 MHz"
     },
     {
       "id": "cbs-standard",
@@ -95,7 +105,9 @@
       "url": "https://m-aac.cbs.co.kr/mweb_cbs981/_definst_/cbs981.stream/playlist.m3u8",
       "homepage": "https://www.cbs.co.kr/onair/fm",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "name_en": "CBS Standard FM",
+      "description_en": "Talk and news · Seoul 98.1 MHz"
     },
     {
       "id": "cbs-joy",
@@ -107,7 +119,8 @@
       "url": "https://m-aac.cbs.co.kr/mweb_cbscmc/_definst_/cbscmc.stream/playlist.m3u8",
       "homepage": "https://www.cbs.co.kr/onair/joy4u",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "description_en": "Contemporary Christian music"
     },
     {
       "id": "sbs-power",
@@ -119,7 +132,9 @@
       "homepage": "https://www.sbs.co.kr/live/S07",
       "channel": "power",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "name_en": "SBS Power FM",
+      "description_en": "Music and entertainment · Seoul 107.7 MHz"
     },
     {
       "id": "sbs-love",
@@ -131,7 +146,9 @@
       "homepage": "https://www.sbs.co.kr/live/S08",
       "channel": "love",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "name_en": "SBS Love FM",
+      "description_en": "Current affairs and entertainment · Seoul 103.5 MHz"
     },
     {
       "id": "mbc-allthat",
@@ -143,7 +160,9 @@
       "homepage": "https://mini.imbc.com/",
       "channel": "chm",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "name_en": "MBC All That Music",
+      "description_en": "Online music station"
     },
     {
       "id": "kbs-radio3",
@@ -155,7 +174,9 @@
       "homepage": "https://radio.kbs.co.kr/",
       "channel": "23",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "name_en": "KBS Radio 3",
+      "description_en": "Culture and public service · Seoul 104.9 MHz"
     },
     {
       "id": "kbs-hanminjok",
@@ -167,7 +188,9 @@
       "homepage": "https://radio.kbs.co.kr/",
       "channel": "26",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "name_en": "KBS Hanminjok Radio",
+      "description_en": "Korean news and cultural exchange"
     },
     {
       "id": "ebs-fm",
@@ -179,7 +202,8 @@
       "homepage": "https://www.ebs.co.kr/onair?channelCodeString=radio",
       "url": "https://ebsonair.ebs.co.kr/fmradiofamilypc/familypc1m/playlist.m3u8",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "description_en": "Education and foreign languages · Seoul 104.5 MHz"
     },
     {
       "id": "tbn-2",
@@ -191,7 +215,9 @@
       "homepage": "https://www.tbn.or.kr/onair/tbnlive.tbn?area_code=2",
       "url": "https://www.tbn.it.kr/busan/myStream/playlist.m3u8",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "name_en": "TBN Busan",
+      "description_en": "Traffic updates and music · Busan 94.9 MHz"
     },
     {
       "id": "tbn-3",
@@ -203,7 +229,9 @@
       "homepage": "https://www.tbn.or.kr/onair/tbnlive.tbn?area_code=3",
       "url": "https://www.tbn.it.kr/gwangju/myStream/playlist.m3u8",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "name_en": "TBN Gwangju and Jeonnam",
+      "description_en": "Traffic updates and music · Gwangju and Jeonnam 97.3 MHz"
     },
     {
       "id": "tbn-4",
@@ -215,7 +243,9 @@
       "homepage": "https://www.tbn.or.kr/onair/tbnlive.tbn?area_code=4",
       "url": "https://www.tbn.it.kr/daegu/myStream/playlist.m3u8",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "name_en": "TBN Daegu",
+      "description_en": "Traffic updates and music · Daegu 103.9 MHz"
     },
     {
       "id": "tbn-5",
@@ -227,7 +257,9 @@
       "homepage": "https://www.tbn.or.kr/onair/tbnlive.tbn?area_code=5",
       "url": "https://www.tbn.it.kr/daejeon/myStream/playlist.m3u8",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "name_en": "TBN Daejeon",
+      "description_en": "Traffic updates and music · Daejeon 102.9 MHz"
     },
     {
       "id": "tbn-6",
@@ -239,7 +271,9 @@
       "homepage": "https://www.tbn.or.kr/onair/tbnlive.tbn?area_code=6",
       "url": "https://www.tbn.it.kr/gyeongin/myStream/playlist.m3u8",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "name_en": "TBN Incheon",
+      "description_en": "Traffic updates and music · Incheon 100.5 MHz"
     },
     {
       "id": "tbn-7",
@@ -251,7 +285,9 @@
       "homepage": "https://www.tbn.or.kr/onair/tbnlive.tbn?area_code=7",
       "url": "https://www.tbn.it.kr/gangwon/myStream/playlist.m3u8",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "name_en": "TBN Gangwon",
+      "description_en": "Traffic updates and music · Gangwon 105.9 MHz"
     },
     {
       "id": "tbn-8",
@@ -263,7 +299,9 @@
       "homepage": "https://www.tbn.or.kr/onair/tbnlive.tbn?area_code=8",
       "url": "https://www.tbn.it.kr/jeonbuk/myStream/playlist.m3u8",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "name_en": "TBN Jeonbuk",
+      "description_en": "Traffic updates and music · Jeonbuk 102.5 MHz"
     },
     {
       "id": "tbn-9",
@@ -275,7 +313,9 @@
       "homepage": "https://www.tbn.or.kr/onair/tbnlive.tbn?area_code=9",
       "url": "https://www.tbn.it.kr/ulsan/myStream/playlist.m3u8",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "name_en": "TBN Ulsan",
+      "description_en": "Traffic updates and music · Ulsan 104.1 MHz"
     },
     {
       "id": "tbn-10",
@@ -287,7 +327,9 @@
       "homepage": "https://www.tbn.or.kr/onair/tbnlive.tbn?area_code=10",
       "url": "https://www.tbn.it.kr/gyeongnam/myStream/playlist.m3u8",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "name_en": "TBN Gyeongnam",
+      "description_en": "Traffic updates and music · Gyeongnam 95.5 MHz"
     },
     {
       "id": "tbn-11",
@@ -299,7 +341,9 @@
       "homepage": "https://www.tbn.or.kr/onair/tbnlive.tbn?area_code=11",
       "url": "https://www.tbn.it.kr/kyungbuk/myStream/playlist.m3u8",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "name_en": "TBN Gyeongbuk",
+      "description_en": "Traffic updates and music · Gyeongbuk 103.5 MHz"
     },
     {
       "id": "tbn-12",
@@ -311,7 +355,9 @@
       "homepage": "https://www.tbn.or.kr/onair/tbnlive.tbn?area_code=12",
       "url": "https://www.tbn.it.kr/jeju/myStream/playlist.m3u8",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "name_en": "TBN Jeju",
+      "description_en": "Traffic updates and music · Jeju 105.5 MHz"
     },
     {
       "id": "tbn-13",
@@ -323,7 +369,9 @@
       "homepage": "https://www.tbn.or.kr/onair/tbnlive.tbn?area_code=13",
       "url": "https://www.tbn.it.kr/chungbuk/myStream/playlist.m3u8",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "name_en": "TBN Chungbuk",
+      "description_en": "Traffic updates and music · Chungbuk 103.3 MHz"
     },
     {
       "id": "tbn-14",
@@ -335,7 +383,9 @@
       "homepage": "https://www.tbn.or.kr/onair/tbnlive.tbn?area_code=14",
       "url": "https://www.tbn.it.kr/chungnam/myStream/playlist.m3u8",
       "country": "KR",
-      "time_zone": "Asia/Seoul"
+      "time_zone": "Asia/Seoul",
+      "name_en": "TBN Chungnam",
+      "description_en": "Traffic updates and music · Chungnam 103.9 MHz"
     },
     {
       "id": "us-kexp",
@@ -347,7 +397,8 @@
       "resolver": "direct",
       "country": "US",
       "color": "#94b6d9",
-      "time_zone": "America/Los_Angeles"
+      "time_zone": "America/Los_Angeles",
+      "description_en": "Indie and alternative · Seattle"
     },
     {
       "id": "us-wnyc",
@@ -359,7 +410,8 @@
       "resolver": "direct",
       "country": "US",
       "color": "#94b6d9",
-      "time_zone": "America/New_York"
+      "time_zone": "America/New_York",
+      "description_en": "News and current affairs · New York"
     },
     {
       "id": "us-wqxr",
@@ -371,7 +423,8 @@
       "resolver": "direct",
       "country": "US",
       "color": "#94b6d9",
-      "time_zone": "America/New_York"
+      "time_zone": "America/New_York",
+      "description_en": "Classical · New York"
     },
     {
       "id": "us-newsounds",
@@ -383,7 +436,8 @@
       "resolver": "direct",
       "country": "US",
       "color": "#94b6d9",
-      "time_zone": "America/New_York"
+      "time_zone": "America/New_York",
+      "description_en": "Contemporary and experimental music · New York"
     },
     {
       "id": "us-kqed",
@@ -395,7 +449,8 @@
       "resolver": "direct",
       "country": "US",
       "color": "#94b6d9",
-      "time_zone": "America/Los_Angeles"
+      "time_zone": "America/Los_Angeles",
+      "description_en": "Public news and current affairs · San Francisco"
     },
     {
       "id": "us-wfmu",
@@ -407,7 +462,8 @@
       "resolver": "direct",
       "country": "US",
       "color": "#94b6d9",
-      "time_zone": "America/New_York"
+      "time_zone": "America/New_York",
+      "description_en": "Freeform and experimental · New Jersey"
     },
     {
       "id": "us-wwoz",
@@ -419,7 +475,8 @@
       "resolver": "direct",
       "country": "US",
       "color": "#94b6d9",
-      "time_zone": "America/Chicago"
+      "time_zone": "America/Chicago",
+      "description_en": "Jazz and blues · New Orleans"
     },
     {
       "id": "us-radio-paradise",
@@ -430,7 +487,8 @@
       "url": "https://stream.radioparadise.com/mp3-192",
       "resolver": "direct",
       "country": "US",
-      "color": "#94b6d9"
+      "color": "#94b6d9",
+      "description_en": "Rock, folk, and world music · Online radio"
     },
     {
       "id": "us-soma-groovesalad",
@@ -442,7 +500,8 @@
       "resolver": "direct",
       "country": "US",
       "color": "#94b6d9",
-      "time_zone": "America/Los_Angeles"
+      "time_zone": "America/Los_Angeles",
+      "description_en": "Downtempo and chillout"
     },
     {
       "id": "us-soma-dronezone",
@@ -454,7 +513,8 @@
       "resolver": "direct",
       "country": "US",
       "color": "#94b6d9",
-      "time_zone": "America/Los_Angeles"
+      "time_zone": "America/Los_Angeles",
+      "description_en": "Ambient"
     },
     {
       "id": "us-soma-indiepop",
@@ -466,7 +526,8 @@
       "resolver": "direct",
       "country": "US",
       "color": "#94b6d9",
-      "time_zone": "America/Los_Angeles"
+      "time_zone": "America/Los_Angeles",
+      "description_en": "Indie pop and rock"
     },
     {
       "id": "us-soma-bootliquor",
@@ -478,7 +539,8 @@
       "resolver": "direct",
       "country": "US",
       "color": "#94b6d9",
-      "time_zone": "America/Los_Angeles"
+      "time_zone": "America/Los_Angeles",
+      "description_en": "Americana and country"
     },
     {
       "id": "us-soma-secretagent",
@@ -490,7 +552,8 @@
       "resolver": "direct",
       "country": "US",
       "color": "#94b6d9",
-      "time_zone": "America/Los_Angeles"
+      "time_zone": "America/Los_Angeles",
+      "description_en": "Lounge and soundtracks"
     },
     {
       "id": "us-soma-u80s",
@@ -502,7 +565,8 @@
       "resolver": "direct",
       "country": "US",
       "color": "#94b6d9",
-      "time_zone": "America/Los_Angeles"
+      "time_zone": "America/Los_Angeles",
+      "description_en": "1980s new wave"
     },
     {
       "id": "us-kcrw",
@@ -514,7 +578,8 @@
       "resolver": "direct",
       "country": "US",
       "color": "#94b6d9",
-      "time_zone": "America/Los_Angeles"
+      "time_zone": "America/Los_Angeles",
+      "description_en": "Music, news, and culture · Los Angeles"
     },
     {
       "id": "uk-bbc-world",
@@ -526,7 +591,8 @@
       "resolver": "direct",
       "country": "GB",
       "color": "#c7b0db",
-      "time_zone": "Europe/London"
+      "time_zone": "Europe/London",
+      "description_en": "World news · London"
     },
     {
       "id": "uk-bbc-radio3",
@@ -538,7 +604,8 @@
       "resolver": "direct",
       "country": "GB",
       "color": "#c7b0db",
-      "time_zone": "Europe/London"
+      "time_zone": "Europe/London",
+      "description_en": "Classical and jazz · London"
     },
     {
       "id": "uk-bbc-radio4",
@@ -550,7 +617,8 @@
       "resolver": "direct",
       "country": "GB",
       "color": "#c7b0db",
-      "time_zone": "Europe/London"
+      "time_zone": "Europe/London",
+      "description_en": "Current affairs and culture · London"
     },
     {
       "id": "uk-nts1",
@@ -562,7 +630,8 @@
       "resolver": "direct",
       "country": "GB",
       "color": "#c7b0db",
-      "time_zone": "Europe/London"
+      "time_zone": "Europe/London",
+      "description_en": "Underground music · London"
     },
     {
       "id": "uk-nts2",
@@ -574,7 +643,8 @@
       "resolver": "direct",
       "country": "GB",
       "color": "#c7b0db",
-      "time_zone": "Europe/London"
+      "time_zone": "Europe/London",
+      "description_en": "Eclectic DJ shows · London"
     },
     {
       "id": "uk-resonance",
@@ -586,7 +656,8 @@
       "resolver": "direct",
       "country": "GB",
       "color": "#c7b0db",
-      "time_zone": "Europe/London"
+      "time_zone": "Europe/London",
+      "description_en": "Arts and culture · London"
     },
     {
       "id": "uk-bbc-radio1",
@@ -598,7 +669,8 @@
       "resolver": "direct",
       "country": "GB",
       "color": "#c7b0db",
-      "time_zone": "Europe/London"
+      "time_zone": "Europe/London",
+      "description_en": "Current pop and dance"
     },
     {
       "id": "uk-bbc-radio2",
@@ -610,7 +682,8 @@
       "resolver": "direct",
       "country": "GB",
       "color": "#c7b0db",
-      "time_zone": "Europe/London"
+      "time_zone": "Europe/London",
+      "description_en": "Pop and classic hits"
     },
     {
       "id": "uk-bbc-radio5",
@@ -622,7 +695,8 @@
       "resolver": "direct",
       "country": "GB",
       "color": "#c7b0db",
-      "time_zone": "Europe/London"
+      "time_zone": "Europe/London",
+      "description_en": "News and sports"
     },
     {
       "id": "uk-bbc-6music",
@@ -634,7 +708,8 @@
       "resolver": "direct",
       "country": "GB",
       "color": "#c7b0db",
-      "time_zone": "Europe/London"
+      "time_zone": "Europe/London",
+      "description_en": "Indie and alternative"
     },
     {
       "id": "uk-bbc-1xtra",
@@ -646,7 +721,8 @@
       "resolver": "direct",
       "country": "GB",
       "color": "#c7b0db",
-      "time_zone": "Europe/London"
+      "time_zone": "Europe/London",
+      "description_en": "Hip-hop and R&B"
     },
     {
       "id": "uk-bbc-radio4extra",
@@ -658,7 +734,8 @@
       "resolver": "direct",
       "country": "GB",
       "color": "#c7b0db",
-      "time_zone": "Europe/London"
+      "time_zone": "Europe/London",
+      "description_en": "Radio drama and comedy"
     },
     {
       "id": "uk-bbc-asiannetwork",
@@ -670,7 +747,8 @@
       "resolver": "direct",
       "country": "GB",
       "color": "#c7b0db",
-      "time_zone": "Europe/London"
+      "time_zone": "Europe/London",
+      "description_en": "South Asian music and talk"
     },
     {
       "id": "uk-classicfm",
@@ -682,7 +760,8 @@
       "resolver": "direct",
       "country": "GB",
       "color": "#c7b0db",
-      "time_zone": "Europe/London"
+      "time_zone": "Europe/London",
+      "description_en": "Classical music"
     },
     {
       "id": "uk-lbc",
@@ -694,7 +773,8 @@
       "resolver": "direct",
       "country": "GB",
       "color": "#c7b0db",
-      "time_zone": "Europe/London"
+      "time_zone": "Europe/London",
+      "description_en": "News and talk"
     },
     {
       "id": "uk-radiox",
@@ -706,7 +786,8 @@
       "resolver": "direct",
       "country": "GB",
       "color": "#c7b0db",
-      "time_zone": "Europe/London"
+      "time_zone": "Europe/London",
+      "description_en": "Indie and rock"
     },
     {
       "id": "uk-capital",
@@ -718,7 +799,8 @@
       "resolver": "direct",
       "country": "GB",
       "color": "#c7b0db",
-      "time_zone": "Europe/London"
+      "time_zone": "Europe/London",
+      "description_en": "Current pop hits"
     },
     {
       "id": "uk-smooth",
@@ -730,7 +812,8 @@
       "resolver": "direct",
       "country": "GB",
       "color": "#c7b0db",
-      "time_zone": "Europe/London"
+      "time_zone": "Europe/London",
+      "description_en": "Soul and pop ballads"
     },
     {
       "id": "uk-heart",
@@ -742,7 +825,8 @@
       "resolver": "direct",
       "country": "GB",
       "color": "#c7b0db",
-      "time_zone": "Europe/London"
+      "time_zone": "Europe/London",
+      "description_en": "Pop and dance"
     },
     {
       "id": "uk-rinse",
@@ -754,7 +838,8 @@
       "resolver": "direct",
       "country": "GB",
       "color": "#c7b0db",
-      "time_zone": "Europe/London"
+      "time_zone": "Europe/London",
+      "description_en": "Dance and club music"
     },
     {
       "id": "uk-kool",
@@ -766,7 +851,8 @@
       "resolver": "direct",
       "country": "GB",
       "color": "#c7b0db",
-      "time_zone": "Europe/London"
+      "time_zone": "Europe/London",
+      "description_en": "Drum and bass, jungle"
     },
     {
       "id": "uk-swu",
@@ -778,7 +864,8 @@
       "resolver": "direct",
       "country": "GB",
       "color": "#c7b0db",
-      "time_zone": "Europe/London"
+      "time_zone": "Europe/London",
+      "description_en": "Electronic and underground · Bristol"
     },
     {
       "id": "ca-cbc-one-toronto",
@@ -790,7 +877,8 @@
       "resolver": "direct",
       "country": "CA",
       "color": "#e3a197",
-      "time_zone": "America/Toronto"
+      "time_zone": "America/Toronto",
+      "description_en": "News and discussion · Toronto"
     },
     {
       "id": "ca-cbc-one-vancouver",
@@ -802,7 +890,8 @@
       "resolver": "direct",
       "country": "CA",
       "color": "#e3a197",
-      "time_zone": "America/Vancouver"
+      "time_zone": "America/Vancouver",
+      "description_en": "News and local coverage · Vancouver"
     },
     {
       "id": "ca-cbc-one-montreal",
@@ -814,7 +903,8 @@
       "resolver": "direct",
       "country": "CA",
       "color": "#e3a197",
-      "time_zone": "America/Toronto"
+      "time_zone": "America/Toronto",
+      "description_en": "English news and local coverage · Montréal"
     },
     {
       "id": "ca-cbc-one-halifax",
@@ -826,7 +916,8 @@
       "resolver": "direct",
       "country": "CA",
       "color": "#e3a197",
-      "time_zone": "America/Halifax"
+      "time_zone": "America/Halifax",
+      "description_en": "News and local coverage · Halifax"
     },
     {
       "id": "ca-cbc-music-toronto",
@@ -838,7 +929,8 @@
       "resolver": "direct",
       "country": "CA",
       "color": "#e3a197",
-      "time_zone": "America/Toronto"
+      "time_zone": "America/Toronto",
+      "description_en": "Canadian music and classical · Toronto"
     },
     {
       "id": "ca-cbc-music-vancouver",
@@ -850,7 +942,8 @@
       "resolver": "direct",
       "country": "CA",
       "color": "#e3a197",
-      "time_zone": "America/Vancouver"
+      "time_zone": "America/Vancouver",
+      "description_en": "Canadian music and classical · Vancouver"
     },
     {
       "id": "ca-cjsw",
@@ -862,7 +955,8 @@
       "resolver": "direct",
       "country": "CA",
       "color": "#e3a197",
-      "time_zone": "America/Edmonton"
+      "time_zone": "America/Edmonton",
+      "description_en": "College radio and indie · Calgary"
     },
     {
       "id": "ca-calm-piano",
@@ -874,7 +968,8 @@
       "resolver": "direct",
       "country": "CA",
       "color": "#e3a197",
-      "time_zone": "America/Toronto"
+      "time_zone": "America/Toronto",
+      "description_en": "Piano and classical"
     },
     {
       "id": "ca-rdmix-rock",
@@ -886,7 +981,8 @@
       "resolver": "direct",
       "country": "CA",
       "color": "#e3a197",
-      "time_zone": "America/Toronto"
+      "time_zone": "America/Toronto",
+      "description_en": "Rock from the 1970s to the 1990s"
     },
     {
       "id": "ca-q107",
@@ -898,7 +994,8 @@
       "resolver": "direct",
       "country": "CA",
       "color": "#e3a197",
-      "time_zone": "America/Toronto"
+      "time_zone": "America/Toronto",
+      "description_en": "Classic rock · Toronto"
     },
     {
       "id": "ca-dkfm",
@@ -909,7 +1006,8 @@
       "url": "https://kathy.torontocast.com:2005/stream",
       "resolver": "direct",
       "country": "CA",
-      "color": "#e3a197"
+      "color": "#e3a197",
+      "description_en": "Shoegaze and dream pop"
     },
     {
       "id": "ca-indie88",
@@ -921,7 +1019,8 @@
       "resolver": "direct",
       "country": "CA",
       "color": "#e3a197",
-      "time_zone": "America/Toronto"
+      "time_zone": "America/Toronto",
+      "description_en": "Indie and alternative · Toronto"
     },
     {
       "id": "ca-boom",
@@ -933,7 +1032,8 @@
       "resolver": "direct",
       "country": "CA",
       "color": "#e3a197",
-      "time_zone": "America/Toronto"
+      "time_zone": "America/Toronto",
+      "description_en": "Pop and rock from the 1970s to the 1990s · Toronto"
     },
     {
       "id": "ca-suitejazz",
@@ -944,7 +1044,8 @@
       "url": "https://jenny.torontocast.com:2000/stream/suitejazzradio",
       "resolver": "direct",
       "country": "CA",
-      "color": "#e3a197"
+      "color": "#e3a197",
+      "description_en": "Jazz and swing"
     },
     {
       "id": "ca-country93",
@@ -956,7 +1057,8 @@
       "resolver": "direct",
       "country": "CA",
       "color": "#e3a197",
-      "time_zone": "America/Toronto"
+      "time_zone": "America/Toronto",
+      "description_en": "Country · Owen Sound"
     },
     {
       "id": "ca-globalnews",
@@ -968,7 +1070,8 @@
       "resolver": "direct",
       "country": "CA",
       "color": "#e3a197",
-      "time_zone": "America/Toronto"
+      "time_zone": "America/Toronto",
+      "description_en": "News and current affairs · Toronto"
     },
     {
       "id": "ca-citynews",
@@ -980,7 +1083,8 @@
       "resolver": "direct",
       "country": "CA",
       "color": "#e3a197",
-      "time_zone": "America/Toronto"
+      "time_zone": "America/Toronto",
+      "description_en": "News and traffic · Toronto"
     },
     {
       "id": "ca-theedge",
@@ -992,7 +1096,8 @@
       "resolver": "direct",
       "country": "CA",
       "color": "#e3a197",
-      "time_zone": "America/Toronto"
+      "time_zone": "America/Toronto",
+      "description_en": "Alternative rock · Toronto"
     },
     {
       "id": "ca-ckom",
@@ -1004,7 +1109,8 @@
       "resolver": "direct",
       "country": "CA",
       "color": "#e3a197",
-      "time_zone": "America/Regina"
+      "time_zone": "America/Regina",
+      "description_en": "News and talk · Saskatoon"
     },
     {
       "id": "ca-wefunk",
@@ -1016,7 +1122,8 @@
       "resolver": "direct",
       "country": "CA",
       "color": "#e3a197",
-      "time_zone": "America/Toronto"
+      "time_zone": "America/Toronto",
+      "description_en": "Funk, soul, and hip-hop · Montréal"
     },
     {
       "id": "jp-beach",
@@ -1028,7 +1135,8 @@
       "resolver": "direct",
       "country": "JP",
       "color": "#e4b96c",
-      "time_zone": "Asia/Tokyo"
+      "time_zone": "Asia/Tokyo",
+      "description_en": "Jazz and bossa nova · Kanagawa"
     },
     {
       "id": "jp-nhk-world",
@@ -1040,7 +1148,8 @@
       "resolver": "direct",
       "country": "JP",
       "color": "#e4b96c",
-      "time_zone": "Asia/Tokyo"
+      "time_zone": "Asia/Tokyo",
+      "description_en": "News and culture · International service"
     },
     {
       "id": "jp-kahoku",
@@ -1052,7 +1161,10 @@
       "resolver": "direct",
       "country": "JP",
       "color": "#e4b96c",
-      "time_zone": "Asia/Tokyo"
+      "time_zone": "Asia/Tokyo",
+      "name_en": "FM Kahoku",
+      "group_en": "Local FM",
+      "description_en": "Local news and talk · Ishikawa"
     },
     {
       "id": "jp-ottava",
@@ -1064,7 +1176,8 @@
       "resolver": "direct",
       "country": "JP",
       "color": "#e4b96c",
-      "time_zone": "Asia/Tokyo"
+      "time_zone": "Asia/Tokyo",
+      "description_en": "Classical music and culture · Tokyo"
     },
     {
       "id": "jp-fred",
@@ -1076,7 +1189,9 @@
       "resolver": "direct",
       "country": "JP",
       "color": "#e4b96c",
-      "time_zone": "Asia/Tokyo"
+      "time_zone": "Asia/Tokyo",
+      "name_en": "FRED Film Radio Japanese",
+      "description_en": "Japanese-language film and culture"
     },
     {
       "id": "jp-dream-kawaii",
@@ -1088,7 +1203,8 @@
       "resolver": "direct",
       "country": "JP",
       "color": "#e4b96c",
-      "time_zone": "Asia/Tokyo"
+      "time_zone": "Asia/Tokyo",
+      "description_en": "Idol music and pop"
     },
     {
       "id": "jp-dream-jazz",
@@ -1100,7 +1216,8 @@
       "resolver": "direct",
       "country": "JP",
       "color": "#e4b96c",
-      "time_zone": "Asia/Tokyo"
+      "time_zone": "Asia/Tokyo",
+      "description_en": "Japanese jazz"
     },
     {
       "id": "jp-ashiya",
@@ -1112,7 +1229,10 @@
       "resolver": "direct",
       "country": "JP",
       "color": "#e4b96c",
-      "time_zone": "Asia/Tokyo"
+      "time_zone": "Asia/Tokyo",
+      "name_en": "Ashiya Radio",
+      "group_en": "Local radio",
+      "description_en": "Music and local culture · Hyogo"
     },
     {
       "id": "jp-dream-powerplay",
@@ -1124,7 +1244,8 @@
       "resolver": "direct",
       "country": "JP",
       "color": "#e4b96c",
-      "time_zone": "Asia/Tokyo"
+      "time_zone": "Asia/Tokyo",
+      "description_en": "J-pop and new releases"
     },
     {
       "id": "jp-wrep",
@@ -1136,7 +1257,8 @@
       "resolver": "direct",
       "country": "JP",
       "color": "#e4b96c",
-      "time_zone": "Asia/Tokyo"
+      "time_zone": "Asia/Tokyo",
+      "description_en": "Japanese hip-hop and talk · Tokyo"
     },
     {
       "id": "jp-dream-sakura",
@@ -1148,7 +1270,8 @@
       "resolver": "direct",
       "country": "JP",
       "color": "#e4b96c",
-      "time_zone": "Asia/Tokyo"
+      "time_zone": "Asia/Tokyo",
+      "description_en": "J-pop and old favorites"
     },
     {
       "id": "jp-dream-rock",
@@ -1160,7 +1283,8 @@
       "resolver": "direct",
       "country": "JP",
       "color": "#e4b96c",
-      "time_zone": "Asia/Tokyo"
+      "time_zone": "Asia/Tokyo",
+      "description_en": "Japanese rock"
     },
     {
       "id": "jp-dream-hiphop",
@@ -1172,7 +1296,8 @@
       "resolver": "direct",
       "country": "JP",
       "color": "#e4b96c",
-      "time_zone": "Asia/Tokyo"
+      "time_zone": "Asia/Tokyo",
+      "description_en": "Japanese hip-hop and R&B"
     },
     {
       "id": "jp-citypop",
@@ -1184,7 +1309,8 @@
       "resolver": "direct",
       "country": "JP",
       "color": "#e4b96c",
-      "time_zone": "Asia/Tokyo"
+      "time_zone": "Asia/Tokyo",
+      "description_en": "Japanese city pop"
     },
     {
       "id": "jp-dream-hits",
@@ -1196,7 +1322,8 @@
       "resolver": "direct",
       "country": "JP",
       "color": "#e4b96c",
-      "time_zone": "Asia/Tokyo"
+      "time_zone": "Asia/Tokyo",
+      "description_en": "Current J-pop"
     },
     {
       "id": "jp-listenmoe",
@@ -1208,7 +1335,8 @@
       "resolver": "direct",
       "country": "JP",
       "color": "#e4b96c",
-      "time_zone": "Asia/Tokyo"
+      "time_zone": "Asia/Tokyo",
+      "description_en": "J-pop and anime music"
     },
     {
       "id": "jp-setagaya",
@@ -1220,7 +1348,10 @@
       "resolver": "direct",
       "country": "JP",
       "color": "#e4b96c",
-      "time_zone": "Asia/Tokyo"
+      "time_zone": "Asia/Tokyo",
+      "name_en": "FM Setagaya 83.4",
+      "group_en": "Local FM",
+      "description_en": "Local Japanese music and talk · Tokyo"
     }
   ]
 }

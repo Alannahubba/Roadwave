@@ -1,7 +1,9 @@
 package kr.onradio.player;
 
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Binder;
@@ -62,7 +64,7 @@ public final class RadioService extends MediaLibraryService implements Player.Li
     RadioCatalog.Station station;
     String country = "";
     String queueScope = RadioLibrary.ALL;
-    String status = "재생 버튼을 눌러 시작하세요.";
+    String status = "";
     boolean automatic, autoplay, favoriteTuning;
     private String previousStationId = "";
     boolean scanning;
@@ -74,7 +76,7 @@ public final class RadioService extends MediaLibraryService implements Player.Li
     long sleepUntil, sleepViewSince;
     MusicRecognition.Track track;
     String trackSource = "";
-    String trackStatus = "재생하면 곡을 찾을 수 있어요.";
+    String trackStatus = "";
 
     private ExoPlayer player;
     private StationPlayer stationPlayer;
@@ -89,19 +91,58 @@ public final class RadioService extends MediaLibraryService implements Player.Li
     private final Runnable resetRetries = () -> { if (wantsPlay && hasAudio()) attempts = 0; };
     private TrackHistory history;
 
+    private String languageCode;
+    Context languageContext() { return AppLanguage.wrap(this); }
+    String localizedString(int id, Object... args) {
+        Context context = languageContext();
+        return args.length == 0 ? context.getString(id) : context.getString(id, args);
+    }
+
+    @Override public void onConfigurationChanged(Configuration configuration) {
+        super.onConfigurationChanged(configuration);
+        applyLanguage();
+    }
+
+    void applyLanguage() {
+        String next = localizedString(R.string.language_code);
+        if (station == null || next.equals(languageCode)) return;
+        languageCode = next;
+        String selected = station.id();
+        stations.clear();
+        stations.addAll(RadioCatalog.load(languageContext()));
+        try {
+            stations.addAll(RadioCatalog.readStations(languageContext(), custom));
+        } catch (Exception ignored) {
+            // The bundled stations are still available.
+        }
+        station = stations.stream().filter(entry -> entry.id().equals(selected)).findFirst().orElse(stations.get(0));
+        status = localizedString(!wantsPlay ? R.string.press_to_start
+            : localPlayback ? (hasAudio() ? R.string.local_playing : R.string.loading_audio)
+            : hasAudio() ? R.string.live : R.string.connecting);
+        trackStatus = localizedString(automatic ? R.string.recognition_autoplay : R.string.recognition_requires_audio);
+        if (track != null) trackSource = localizedString(broadcastTrack == null
+            ? R.string.recent_recognition : R.string.source_broadcaster);
+        retryMessage = "";
+        library.changed(session);
+        notifyObservers();
+    }
+
     final class LocalBinder extends Binder {
         RadioService getService() { return RadioService.this; }
     }
 
     @Override public void onCreate() {
         super.onCreate();
+        status = localizedString(R.string.press_to_start);
+        trackStatus = localizedString(R.string.recognition_requires_audio);
         preferences = getSharedPreferences("onradio", MODE_PRIVATE);
         history = new TrackHistory(preferences);
-        stations.addAll(RadioCatalog.load(this));
+        stations.addAll(RadioCatalog.load(languageContext()));
+        languageCode = localizedString(R.string.language_code);
         try {
             JSONArray saved = new JSONArray(preferences.getString("custom", "[]"));
             for (int i = 0; i < saved.length(); i++) custom.put(saved.getJSONObject(i));
-            stations.addAll(RadioCatalog.readStations(custom));
+            stations.addAll(RadioCatalog.readStations(languageContext(), custom));
         } catch (Exception ignored) {
             // Bundled channels remain available if preferences were damaged.
         }
@@ -178,10 +219,10 @@ public final class RadioService extends MediaLibraryService implements Player.Li
             .buildUpon().setMediaId(RadioLibrary.scopedId(entry.id(), scope)).build());
     }
 
-    private static MediaItem createMediaItem(RadioCatalog.Station target, String url) {
+    private MediaItem createMediaItem(RadioCatalog.Station target, String url) {
         var item = new MediaItem.Builder().setMediaId(target.id()).setUri(url)
             .setMediaMetadata(new MediaMetadata.Builder().setTitle(target.name())
-                .setSubtitle(RadioCatalog.countryName(target.country())).setArtworkUri(RadioLibrary.RADIO_ARTWORK).build());
+                .setSubtitle(RadioCatalog.countryName(languageContext(), target.country())).setArtworkUri(RadioLibrary.RADIO_ARTWORK).build());
         String path = Uri.parse(url).getPath();
         if (path != null && path.toLowerCase(Locale.ROOT).contains(".m3u8")) {
             item.setMimeType(MimeTypes.APPLICATION_M3U8);
@@ -201,7 +242,7 @@ public final class RadioService extends MediaLibraryService implements Player.Li
 
     void openLocalFiles(List<MediaItem> files, int index) {
         if (files.isEmpty()) return;
-        stopRadio("음악 파일을 여는 중…");
+        stopRadio(localizedString(R.string.open_audio));
         localPlayback = true;
         wantsPlay = true;
         player.setMediaItems(files, index, 0);
@@ -212,7 +253,7 @@ public final class RadioService extends MediaLibraryService implements Player.Li
 
     String localTitle() {
         CharSequence title = player.getMediaMetadata().title;
-        return title == null ? "음악 파일" : title.toString();
+        return title == null ? localizedString(R.string.audio_file) : title.toString();
     }
 
     String localPosition() { return (player.getCurrentMediaItemIndex() + 1) + " / " + player.getMediaItemCount(); }
@@ -251,11 +292,11 @@ public final class RadioService extends MediaLibraryService implements Player.Li
 
     void togglePlayback() {
         if (localPlayback) {
-            if (wantsPlay) stopRadio("재생을 멈췄습니다.");
+            if (wantsPlay) stopRadio(localizedString(R.string.stopped));
             else playLocal();
             return;
         }
-        if (wantsPlay) stopRadio("재생을 멈췄습니다.");
+        if (wantsPlay) stopRadio(localizedString(R.string.stopped));
         else resumeRadio(RadioLibrary.scopeForCountry(country));
     }
 
@@ -267,7 +308,7 @@ public final class RadioService extends MediaLibraryService implements Player.Li
 
     private void resumeRadio(String scope) {
         RadioCatalog.Station next = stationForResume(scope);
-        if (next == null) stopRadio("선택한 국가에 표시할 방송국이 없어요.");
+        if (next == null) stopRadio(localizedString(R.string.no_country_station));
         else tune(next, scope);
     }
 
@@ -316,7 +357,7 @@ public final class RadioService extends MediaLibraryService implements Player.Li
         player.stop();
         player.clearMediaItems();
         resetMusic();
-        status = "방송에 연결하는 중…";
+        status = localizedString(R.string.connecting);
         notifyObservers();
         network.execute(() -> {
             try {
@@ -366,14 +407,14 @@ public final class RadioService extends MediaLibraryService implements Player.Li
             return;
         }
         if (++attempts > 2) {
-            stopRadio("방송에 연결할 수 없어요. 잠시 후 다시 시도해주세요.");
+            stopRadio(localizedString(R.string.connection_failed));
             return;
         }
         int request = ++epoch;
         player.stop();
         player.clearMediaItems();
         resetMusic();
-        status = "방송에 다시 연결하는 중… (" + attempts + "/2)";
+        status = localizedString(R.string.reconnecting, attempts);
         notifyObservers();
         main.postDelayed(() -> { if (current(request)) connect(); }, attempts * 2000L);
     }
@@ -382,14 +423,14 @@ public final class RadioService extends MediaLibraryService implements Player.Li
         if (localPlayback) {
             if (state == Player.STATE_ENDED) {
                 wantsPlay = false;
-                status = "마지막 곡의 재생이 끝났어요.";
-            } else if (state == Player.STATE_BUFFERING) status = "음악 파일을 불러오는 중…";
+                status = localizedString(R.string.playlist_ended);
+            } else if (state == Player.STATE_BUFFERING) status = localizedString(R.string.loading_audio);
             notifyObservers();
             return;
         }
         if (state == Player.STATE_ENDED && wantsPlay) retry();
         else if (state == Player.STATE_BUFFERING && wantsPlay) {
-            status = "방송을 불러오는 중…";
+            status = localizedString(R.string.loading_station);
             if (scanning && scanHeard) {
                 scanHeard = false;
                 scheduleScan(Math.max(0, scanDeadline - SystemClock.elapsedRealtime()));
@@ -401,7 +442,7 @@ public final class RadioService extends MediaLibraryService implements Player.Li
     @Override public void onPlayerError(PlaybackException error) {
         if (localPlayback) {
             wantsPlay = false;
-            status = "음악 파일을 재생할 수 없어요.";
+            status = localizedString(R.string.audio_error);
             notifyObservers();
         } else retry();
     }
@@ -417,13 +458,13 @@ public final class RadioService extends MediaLibraryService implements Player.Li
     @Override public void onIsPlayingChanged(boolean playing) {
         main.removeCallbacks(resetRetries);
         if (localPlayback) {
-            if (playing) status = "▶ 음악 파일 재생 중";
+            if (playing) status = localizedString(R.string.local_playing);
             notifyObservers();
             return;
         }
         if (playing) {
             if (attempts > 0) main.postDelayed(resetRetries, STABLE_PLAYBACK_MS);
-            status = "● LIVE  ·  실시간 방송";
+            status = localizedString(R.string.live);
             mediaTrack(player.getMediaMetadata());
             if (scanning) {
                 scanHeard = true;
@@ -436,7 +477,7 @@ public final class RadioService extends MediaLibraryService implements Player.Li
     @Override public void onPlayWhenReadyChanged(boolean ready, int reason) {
         if (!ready && wantsPlay && (reason == Player.PLAY_WHEN_READY_CHANGE_REASON_AUDIO_BECOMING_NOISY
                 || reason == Player.PLAY_WHEN_READY_CHANGE_REASON_AUDIO_FOCUS_LOSS)) {
-            main.post(() -> { if (!destroyed && wantsPlay && !player.getPlayWhenReady()) stopRadio("재생을 멈췄습니다."); });
+            main.post(() -> { if (!destroyed && wantsPlay && !player.getPlayWhenReady()) stopRadio(localizedString(R.string.stopped)); });
         }
     }
 
@@ -475,7 +516,7 @@ public final class RadioService extends MediaLibraryService implements Player.Li
     private void setBroadcastTrack(MusicRecognition.Track metadata) {
         if (metadata.equals(broadcastTrack)) return;
         broadcastTrack = track = metadata;
-        trackSource = "방송 제공";
+        trackSource = localizedString(R.string.source_broadcaster);
         history.remember(metadata, station);
         manual = false;
         notifyObservers();
@@ -588,7 +629,7 @@ public final class RadioService extends MediaLibraryService implements Player.Li
         String scope = tuningScope();
         RadioCatalog.Station candidate = adjacent(1, scope);
         if (candidate == null || scanFailures >= library.queue(scope).size()) {
-            stopRadio("탐색을 마쳤어요. 재생할 수 있는 다른 채널이 없어요.");
+            stopRadio(localizedString(R.string.scan_finished));
             return;
         }
         scanHeard = false;
@@ -603,7 +644,7 @@ public final class RadioService extends MediaLibraryService implements Player.Li
         library.changed(session);
         if (!localPlayback && wantsPlay && RadioLibrary.isFavoriteScope(queueScope) && !library.includes(station, queueScope)) {
             RadioCatalog.Station candidate = adjacent(1, queueScope);
-            if (candidate == null) stopRadio("표시할 즐겨찾기 채널이 없어요.");
+            if (candidate == null) stopRadio(localizedString(R.string.no_favorites));
             else choose(candidate, queueScope);
         } else notifyObservers();
     }
@@ -617,15 +658,15 @@ public final class RadioService extends MediaLibraryService implements Player.Li
             if (!available.isEmpty()) step(1, queueScope);
             else if (!RadioLibrary.isFavoriteScope(queueScope)
                     && !library.queue(RadioLibrary.ALL).isEmpty()) step(1, RadioLibrary.ALL);
-            else stopRadio("표시할 방송국이 없어요.");
+            else stopRadio(localizedString(R.string.no_visible_stations));
         } else notifyObservers();
     }
 
     void addStation(String name, String url) throws JSONException {
         JSONObject record = new JSONObject().put("id", "custom-" + UUID.randomUUID()).put("name", name)
-            .put("group", "직접 추가").put("description", "내가 추가한 방송").put("url", RadioCatalog.webUrl(url));
+            .put("group", localizedString(R.string.custom_station)).put("description", localizedString(R.string.custom_description)).put("url", RadioCatalog.webUrl(url));
         custom.put(record);
-        stations.add(RadioCatalog.Station.read(record));
+        stations.add(RadioCatalog.Station.read(languageContext(), record));
         preferences.edit().putString("custom", custom.toString()).apply();
         library.changed(session);
         notifyObservers();
@@ -641,7 +682,7 @@ public final class RadioService extends MediaLibraryService implements Player.Li
             }
         }
         if (entry.equals(station)) {
-            stopRadio("직접 추가한 채널을 삭제했습니다.");
+            stopRadio(localizedString(R.string.custom_deleted));
             station = stations.get(0);
         }
         stations.remove(entry);
@@ -704,7 +745,7 @@ public final class RadioService extends MediaLibraryService implements Player.Li
         nextRecognition = trackExpires = carRecognitionUntil = 0;
         manual = false;
         retryMessage = "";
-        trackStatus = automatic ? "재생을 시작하면 자동으로 곡을 찾아요." : "재생하면 곡을 찾을 수 있어요.";
+        trackStatus = automatic ? localizedString(R.string.recognition_autoplay) : localizedString(R.string.recognition_requires_audio);
     }
 
     private void updateRecognition(long now) {
@@ -712,10 +753,9 @@ public final class RadioService extends MediaLibraryService implements Player.Li
         if (localPlayback || !hasAudio() || broadcastTrack != null || recognizing) return;
         if (!manual && (!automatic || now < nextRecognition)) {
             if (automatic && !retryMessage.isEmpty() && track == null) {
-                trackStatus = retryMessage + " " + Math.max(1, (nextRecognition - now + 999) / 1000)
-                    + "초 후 자동으로 다시 시도합니다.";
+                trackStatus = localizedString(R.string.recognition_retry, retryMessage, Math.max(1, (nextRecognition - now + 999) / 1000));
             } else if (retryMessage.isEmpty()) {
-                trackStatus = "곡 인식으로 제목과 가수를 찾아보세요.";
+                trackStatus = localizedString(R.string.recognition_prompt);
             }
             return;
         }
@@ -723,9 +763,9 @@ public final class RadioService extends MediaLibraryService implements Player.Li
         if (clip == null) {
             if (manual && now >= manualDeadline) {
                 manual = false;
-                trackStatus = "방송 소리가 모이면 다시 시도해주세요.";
+                trackStatus = localizedString(R.string.recognition_wait);
             } else {
-                trackStatus = "방송 소리를 모으는 중…";
+                trackStatus = localizedString(R.string.collecting_audio);
             }
             return;
         }
@@ -733,7 +773,7 @@ public final class RadioService extends MediaLibraryService implements Player.Li
         manual = false;
         retryMessage = "";
         nextRecognition = now + 45_000;
-        trackStatus = "곡을 찾는 중…";
+        trackStatus = localizedString(R.string.identifying);
         int request = epoch;
         network.execute(() -> {
             try {
@@ -754,15 +794,15 @@ public final class RadioService extends MediaLibraryService implements Player.Li
         track = result;
         long now = SystemClock.elapsedRealtime();
         if (result != null) {
-            trackSource = "최근 인식";
+            trackSource = localizedString(R.string.recent_recognition);
             history.remember(result, station);
             trackExpires = now + 70_000;
         } else if (automatic) {
-            retryMessage = error ? "연결이 지연돼" : "곡을 찾지 못해";
+            retryMessage = error ? localizedString(R.string.recognition_delayed) : localizedString(R.string.recognition_no_match);
             nextRecognition = now + (error ? 20_000 : 12_000);
             updateRecognition(now);
         } else {
-            retryMessage = error ? "곡 인식 서비스에 연결할 수 없어요." : "곡을 찾지 못했어요. 음악이 나올 때 다시 시도해주세요.";
+            retryMessage = error ? localizedString(R.string.recognition_unreachable) : localizedString(R.string.recognition_no_match_full);
             trackStatus = retryMessage;
         }
         notifyObservers();
@@ -774,7 +814,7 @@ public final class RadioService extends MediaLibraryService implements Player.Li
             long now = SystemClock.elapsedRealtime();
             if (sleepUntil > 0 && now >= sleepUntil) {
                 sleepUntil = 0;
-                stopRadio("취침 타이머가 끝나 재생을 멈췄습니다.");
+                stopRadio(localizedString(R.string.timer_finished));
             }
             MusicRecognition.Track priorTrack = track;
             String priorStatus = trackStatus;
@@ -803,7 +843,7 @@ public final class RadioService extends MediaLibraryService implements Player.Li
             var entries = new ArrayList<MediaItemData>();
             int current = C.INDEX_UNSET;
             for (RadioCatalog.Station entry : library.queue(queueScope)) {
-                MediaItem item = RadioLibrary.playable(entry, queueScope);
+                MediaItem item = RadioLibrary.playable(languageContext(), entry, queueScope);
                 if (entry.id().equals(station.id())) {
                     current = entries.size();
                     String detail = track == null ? null : track.title() + " · " + track.artist();
@@ -828,10 +868,10 @@ public final class RadioService extends MediaLibraryService implements Player.Li
         @Override protected ListenableFuture<?> handleSetPlayWhenReady(boolean ready) {
             if (localPlayback) {
                 if (ready) playLocal();
-                else stopRadio("재생을 멈췄습니다.");
+                else stopRadio(localizedString(R.string.stopped));
                 return Futures.immediateVoidFuture();
             }
-            if (!ready) stopRadio("재생을 멈췄습니다.");
+            if (!ready) stopRadio(localizedString(R.string.stopped));
             else if (player.getCurrentMediaItem() != null) {
                 wantsPlay = true;
                 if (player.getPlaybackState() == Player.STATE_IDLE) player.prepare();
@@ -841,7 +881,7 @@ public final class RadioService extends MediaLibraryService implements Player.Li
         }
 
         @Override protected ListenableFuture<?> handleStop() {
-            stopRadio("재생을 멈췄습니다.");
+            stopRadio(localizedString(R.string.stopped));
             return Futures.immediateVoidFuture();
         }
 
@@ -861,7 +901,7 @@ public final class RadioService extends MediaLibraryService implements Player.Li
                     attempts = 0;
                     resetMusic();
                     preferences.edit().putString("last", entry.id()).putString("queueScope", queueScope).apply();
-                    status = "방송을 불러오는 중…";
+                    status = localizedString(R.string.loading_station);
                     player.setMediaItem(requested.buildUpon().setMediaId(entry.id()).build());
                     notifyObservers();
                 }

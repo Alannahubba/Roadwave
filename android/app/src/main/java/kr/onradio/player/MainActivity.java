@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.ColorStateList;
@@ -116,6 +117,7 @@ public final class MainActivity extends Activity {
     private final ServiceConnection connection = new ServiceConnection() {
         @Override public void onServiceConnected(ComponentName name, IBinder binder) {
             radio = ((RadioService.LocalBinder) binder).getService();
+            radio.applyLanguage();
             radio.subscribe(changed);
             render();
             if (!pendingLocalFiles.isEmpty()) openPendingFiles();
@@ -129,6 +131,10 @@ public final class MainActivity extends Activity {
             render();
         }
     };
+
+    @Override protected void attachBaseContext(Context base) {
+        super.attachBaseContext(AppLanguage.wrap(base));
+    }
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
@@ -153,19 +159,19 @@ public final class MainActivity extends Activity {
     private void showMusicMenu(View button) {
         PopupMenu menu = new PopupMenu(this, button);
         if (musicFolder != null) {
-            menu.getMenu().add("음악 폴더 둘러보기").setOnMenuItemClickListener(item -> {
+            menu.getMenu().add(getString(R.string.browse_folders)).setOnMenuItemClickListener(item -> {
                 browseMusicFolder(musicFolder);
                 return true;
             });
         }
-        menu.getMenu().add("폴더 선택…").setOnMenuItemClickListener(item -> {
+        menu.getMenu().add(getString(R.string.choose_folder)).setOnMenuItemClickListener(item -> {
             var picker = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
                 .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
             if (musicFolder != null) picker.putExtra(DocumentsContract.EXTRA_INITIAL_URI, musicFolder);
             launchPicker(picker, OPEN_MUSIC_FOLDER);
             return true;
         });
-        menu.getMenu().add("음악 파일 열기…").setOnMenuItemClickListener(item -> {
+        menu.getMenu().add(getString(R.string.open_files)).setOnMenuItemClickListener(item -> {
             chooseLocalFiles();
             return true;
         });
@@ -183,7 +189,7 @@ public final class MainActivity extends Activity {
     private void launchPicker(Intent picker, int requestCode) {
         try { startActivityForResult(picker, requestCode); }
         catch (android.content.ActivityNotFoundException error) {
-            Toast.makeText(this, "파일 선택 앱을 찾지 못했어요.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.no_picker), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -215,40 +221,40 @@ public final class MainActivity extends Activity {
 
     private void browseMusicFolder(Uri tree) {
         try {
-            var root = new MusicEntry(DocumentsContract.getTreeDocumentId(tree), "음악 폴더", true);
+            var root = new MusicEntry(DocumentsContract.getTreeDocumentId(tree), getString(R.string.music_folder), true);
             browseMusicFolder(tree, List.of(root));
         } catch (IllegalArgumentException error) {
-            Toast.makeText(this, "폴더를 다시 선택해 주세요.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.choose_folder_again), Toast.LENGTH_SHORT).show();
         }
     }
 
     private void browseMusicFolder(Uri tree, List<MusicEntry> path) {
         MusicEntry folder = path.get(path.size() - 1);
-        var loading = new AlertDialog.Builder(this).setMessage("폴더를 읽는 중…")
-            .setNegativeButton("닫기", null).show();
+        var loading = new AlertDialog.Builder(this).setMessage(getString(R.string.reading_folder))
+            .setNegativeButton(getString(R.string.close), null).show();
         CompletableFuture.supplyAsync(() -> readMusicFolder(tree, folder)).whenComplete((entries, error) ->
             runOnUiThread(() -> {
                 if (isFinishing() || isDestroyed() || !loading.isShowing()) return;
                 loading.dismiss();
                 var builder = new AlertDialog.Builder(this).setTitle(folder.name());
-                if (path.size() > 1) builder.setNegativeButton("‹ 상위 폴더", (d, index) ->
+                if (path.size() > 1) builder.setNegativeButton(getString(R.string.parent_folder), (d, index) ->
                     browseMusicFolder(tree, path.subList(0, path.size() - 1)));
-                else builder.setNegativeButton("닫기", null);
+                else builder.setNegativeButton(getString(R.string.close), null);
                 if (error != null || entries.isEmpty()) {
-                    builder.setMessage(error != null ? "폴더를 읽을 수 없어요. 폴더 선택에서 접근 권한을 다시 허용해 주세요."
-                        : "표시할 폴더나 음악 파일이 없어요.").show();
+                    builder.setMessage(error != null ? getString(R.string.folder_permission)
+                        : getString(R.string.empty_folder)).show();
                     return;
                 }
                 var rows = new ArrayList<String>();
                 int folderCount = 0;
                 for (MusicEntry entry : entries) {
                     if (entry.directory()) folderCount++;
-                    rows.add(entry.directory() ? "폴더  ›  " + entry.name() : entry.name());
+                    rows.add(entry.directory() ? getString(R.string.folder_row, entry.name()) : entry.name());
                 }
                 int firstTrack = folderCount;
                 List<MediaItem> files = musicItems(tree, entries);
                 var dialog = builder.setSingleChoiceItems(rows.toArray(new String[0]), -1, null)
-                    .setNeutralButton("폴더 열기", null).setPositiveButton("이 폴더 재생", null).show();
+                    .setNeutralButton(getString(R.string.enter_folder), null).setPositiveButton(getString(R.string.play_this_folder), null).show();
                 Button enter = dialog.getButton(AlertDialog.BUTTON_NEUTRAL);
                 Button playFolder = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
                 ListView list = dialog.getListView();
@@ -258,7 +264,7 @@ public final class MainActivity extends Activity {
                     boolean directory = entries.get(index).directory();
                     enter.setEnabled(directory);
                     playFolder.setEnabled(true);
-                    playFolder.setText(directory ? "선택 폴더 재생" : "선택 곡 재생");
+                    playFolder.setText(directory ? getString(R.string.play_selected_folder) : getString(R.string.play_selected_track));
                 });
                 enter.setOnClickListener(view -> {
                     int index = list.getCheckedItemPosition();
@@ -287,8 +293,8 @@ public final class MainActivity extends Activity {
                 if (isFinishing() || isDestroyed() || !dialog.isShowing()) return;
                 playFolder.setEnabled(true);
                 if (error != null || files.isEmpty()) {
-                    Toast.makeText(this, error != null ? "선택한 폴더를 읽을 수 없어요."
-                        : "선택한 폴더에 재생할 곡이 없어요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, error != null ? getString(R.string.cannot_read_folder)
+                        : getString(R.string.no_playable_tracks), Toast.LENGTH_SHORT).show();
                 } else {
                     dialog.dismiss();
                     queueLocalFiles(files, 0);
@@ -296,7 +302,7 @@ public final class MainActivity extends Activity {
             }));
     }
 
-    private static List<MediaItem> musicItems(Uri tree, List<MusicEntry> entries) {
+    private List<MediaItem> musicItems(Uri tree, List<MusicEntry> entries) {
         var files = new ArrayList<MediaItem>();
         for (MusicEntry entry : entries) {
             if (!entry.directory()) files.add(mediaItem(DocumentsContract.buildDocumentUriUsingTree(tree, entry.id()), entry.name()));
@@ -343,9 +349,9 @@ public final class MainActivity extends Activity {
         return mediaItem(uri, title);
     }
 
-    private static MediaItem mediaItem(Uri uri, String title) {
+    private MediaItem mediaItem(Uri uri, String title) {
         return new MediaItem.Builder().setUri(uri).setMediaId(uri.toString())
-            .setMediaMetadata(new MediaMetadata.Builder().setTitle(title == null ? "음악 파일" : title).build()).build();
+            .setMediaMetadata(new MediaMetadata.Builder().setTitle(title == null ? getString(R.string.audio_file) : title).build()).build();
     }
 
     private void openPendingFiles() {
@@ -370,7 +376,7 @@ public final class MainActivity extends Activity {
     private void playVoiceSearch() {
         String query = pendingVoiceSearch;
         pendingVoiceSearch = null;
-        if (!radio.playSearch(query)) Toast.makeText(this, "일치하는 방송국이 없어요.", Toast.LENGTH_SHORT).show();
+        if (!radio.playSearch(query)) Toast.makeText(this, getString(R.string.no_station_match), Toast.LENGTH_SHORT).show();
     }
 
     @Override protected void onSaveInstanceState(Bundle state) {
@@ -416,12 +422,12 @@ public final class MainActivity extends Activity {
         root.setFocusableInTouchMode(true);
         root.requestFocus();
         LinearLayout header = row();
-        TextView brand = label("온라디오", 22, TEXT, true);
+        TextView brand = label(getString(R.string.app_name), 22, TEXT, true);
         header.addView(brand, weighted());
-        countryButton = button("모든 국가 ▾", view -> chooseCountry());
-        countryButton.setContentDescription("국가 선택");
+        countryButton = button(getString(R.string.all_countries_menu), view -> chooseCountry());
+        countryButton.setContentDescription(getString(R.string.choose_country));
         header.addView(countryButton);
-        listToggle = button("채널 목록 OFF", view -> {
+        listToggle = button(getString(R.string.channels_off), view -> {
             listVisible = !listVisible;
             render();
         });
@@ -460,22 +466,22 @@ public final class MainActivity extends Activity {
             if (radio.localPlayback) radio.returnToRadio();
             else radio.cycleCountry();
         });
-        bandKey.setTooltipText("선택할 국가를 바꿉니다.");
+        bandKey.setTooltipText(getString(R.string.band_tip));
         functionKeys.addView(bandKey, weighted());
         scanKey = physicalKey("SCAN", view -> { if (radio != null) radio.toggleScan(); });
-        scanKey.setTooltipText("채널을 6초씩 들어봅니다. 다시 누르면 현재 채널에 멈춥니다.");
+        scanKey.setTooltipText(getString(R.string.scan_tip));
         side(functionKeys, scanKey, 1f);
         favoriteKey = physicalKey("FAV", view -> {
             if (radio != null) radio.setFavoriteTuning(!radio.favoriteTuning);
         });
-        favoriteKey.setTooltipText("SEEK와 SCAN을 현재 국가의 즐겨찾기 안에서만 사용합니다.");
+        favoriteKey.setTooltipText(getString(R.string.fav_tip));
         side(functionKeys, favoriteKey, 1f);
         displayKey = physicalKey("DISP", view -> {
             songDisplay = !songDisplay;
             getSharedPreferences("onradio", MODE_PRIVATE).edit().putBoolean("songDisplay", songDisplay).apply();
             render();
         });
-        displayKey.setTooltipText("LCD에 채널 정보 또는 곡 정보를 크게 표시합니다.");
+        displayKey.setTooltipText(getString(R.string.display_tip));
         side(functionKeys, displayKey, 1f);
         dimKey = physicalKey("DIM", view -> {
             lcdLevel = (lcdLevel + 1) % 3;
@@ -501,7 +507,7 @@ public final class MainActivity extends Activity {
 
         LinearLayout stationHeader = row();
         LinearLayout identity = column();
-        title = label("온라디오", 22, LCD_INK, true);
+        title = label(getString(R.string.app_name), 22, LCD_INK, true);
         title.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
         countryName = label("", 12, LCD_INK, true);
         bandIndicator = label("", 11, LCD_INK, true);
@@ -514,10 +520,10 @@ public final class MainActivity extends Activity {
         } else identity.addView(countryName);
         stationHeader.addView(identity, weighted());
         star = button("☆", view -> { if (radio != null) radio.toggleFavorite(radio.station.id()); });
-        star.setContentDescription("즐겨찾기");
+        star.setContentDescription(getString(R.string.favorites));
         side(stationHeader, star);
         display.addView(stationHeader);
-        playbackStatus = label("온라디오를 불러오는 중…", 12, LCD_INK, false);
+        playbackStatus = label(getString(R.string.loading_app), 12, LCD_INK, false);
         display.addView(playbackStatus);
         if (!shortLandscape) display.addView(bandIndicator);
         trackTitle = label("", 14, shortLandscape ? TEXT : LCD_INK, true);
@@ -542,17 +548,17 @@ public final class MainActivity extends Activity {
 
         LinearLayout transport = row();
         previous = seekKey("‹ SEEK", -1);
-        previous.setContentDescription("이전 채널");
+        previous.setContentDescription(getString(R.string.previous_channel));
         transport.addView(previous, weighted());
-        play = physicalKey("▶ 재생", view -> { if (radio != null) radio.togglePlayback(); });
+        play = physicalKey(getString(R.string.play), view -> { if (radio != null) radio.togglePlayback(); });
         styleButton(play, true);
         side(transport, play, 1f);
         next = seekKey("SEEK ›", 1);
-        next.setContentDescription("다음 채널");
+        next.setContentDescription(getString(R.string.next_channel));
         side(transport, next, 1f);
         recallKey = physicalKey("RCL", view -> { if (radio != null) radio.recallPrevious(); });
-        recallKey.setContentDescription("직전 채널");
-        recallKey.setTooltipText("직전에 선택한 방송으로 돌아갑니다.");
+        recallKey.setContentDescription(getString(R.string.recall_channel));
+        recallKey.setTooltipText(getString(R.string.recall_tip));
         side(transport, recallKey, 1f);
         for (Button key : new Button[]{previous, play, next, recallKey}) {
             key.setPadding(dp(3), 0, dp(3), 0);
@@ -567,7 +573,7 @@ public final class MainActivity extends Activity {
             key.setPadding(dp(2), 0, dp(2), 0);
             key.setOnLongClickListener(view -> {
                 if (radio != null && radio.storePreset(slotNumber)) {
-                    Toast.makeText(this, (slotNumber + 1) + "번에 " + radio.station.name() + " 저장", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.preset_saved, slotNumber + 1, radio.station.name()), Toast.LENGTH_SHORT).show();
                 }
                 return true;
             });
@@ -581,16 +587,16 @@ public final class MainActivity extends Activity {
         trackPanel.addView(trackByline);
 
         LinearLayout music = row();
-        identify = button("곡 인식", view -> { if (radio != null) radio.recognize(); });
-        identify.setTooltipText("마이크 없이 방송 소리에서 만든 음악 지문을 Shazam에 보냅니다.");
+        identify = button(getString(R.string.recognize), view -> { if (radio != null) radio.recognize(); });
+        identify.setTooltipText(getString(R.string.recognize_tip));
         music.addView(identify, weighted());
-        automatic = button("자동 꺼짐", view -> { if (radio != null) radio.setAutomatic(!radio.automatic); });
-        automatic.setTooltipText("방송 소리에서 만든 음악 지문을 Shazam에 보내 자동으로 곡을 찾습니다.");
+        automatic = button(getString(R.string.auto_off), view -> { if (radio != null) radio.setAutomatic(!radio.automatic); });
+        automatic.setTooltipText(getString(R.string.auto_tip));
         side(music, automatic, 1f);
         youtube = button("YouTube Music ↗", view -> {
             if (radio != null && radio.track != null) open(radio.track.youtubeMusic());
         });
-        youtube.setTooltipText("짧게 누르면 YouTube Music, 길게 누르면 음악 검색 서비스 선택");
+        youtube.setTooltipText(getString(R.string.music_search_tip));
         youtube.setOnLongClickListener(view -> {
             if (radio == null || radio.track == null) return false;
             showTrackSearch(radio.track);
@@ -599,24 +605,24 @@ public final class MainActivity extends Activity {
         side(music, youtube, 1.55f);
         spaceAbove(player, music, 5);
         LinearLayout sleepRow = row();
-        sleepPlus = physicalKey("취침 +30분", view -> { if (radio != null) radio.extendSleep(); });
-        sleepPlus.setTooltipText("남은 시간에 30분을 더합니다. 최대 6시간까지 설정할 수 있습니다.");
+        sleepPlus = physicalKey(getString(R.string.sleep_add), view -> { if (radio != null) radio.extendSleep(); });
+        sleepPlus.setTooltipText(getString(R.string.sleep_add_tip));
         sleepRow.addView(sleepPlus);
         sleepRemaining = new ClockDisplay(this);
         var clockPanel = new LinearLayout.LayoutParams(0, dp(36), 1);
         clockPanel.setMarginStart(dp(5));
         clockPanel.setMarginEnd(dp(5));
         sleepRow.addView(sleepRemaining, clockPanel);
-        sleepClear = physicalKey("해제", view -> { if (radio != null) radio.clearSleep(); });
-        sleepClear.setContentDescription("취침 타이머 해제");
+        sleepClear = physicalKey(getString(R.string.sleep_clear), view -> { if (radio != null) radio.clearSleep(); });
+        sleepClear.setContentDescription(getString(R.string.sleep_clear_accessible));
         sleepRow.addView(sleepClear);
         spaceAbove(player, sleepRow, 5);
-        tools = button("설정", view -> showTools());
         LinearLayout toolsRow = row();
-        toolsRow.addView(tools, weighted());
-        history = button("곡 기록", view -> showTrackHistory());
-        side(toolsRow, physicalKey("FILE", this::showMusicMenu));
-        side(toolsRow, history);
+        toolsRow.addView(physicalKey("FILE", this::showMusicMenu), weighted());
+        history = button(getString(R.string.track_history), view -> showTrackHistory());
+        side(toolsRow, history, 1f);
+        tools = button(getString(R.string.settings), view -> showTools());
+        side(toolsRow, tools);
         spaceAbove(player, toolsRow, 5);
 
         library = column();
@@ -624,8 +630,8 @@ public final class MainActivity extends Activity {
         library.setPadding(dp(9), dp(7), dp(9), dp(5));
         LinearLayout filters = row();
         tabs = new Button[] {
-            button("전체", v -> setMode(ALL)), button("즐겨찾기", v -> setMode(FAVORITES)),
-            button("숨긴 채널", v -> setMode(HIDDEN))
+            button(getString(R.string.all), v -> setMode(ALL)), button(getString(R.string.favorites), v -> setMode(FAVORITES)),
+            button(getString(R.string.hidden), v -> setMode(HIDDEN))
         };
         filters.addView(tabs[0], weighted());
         side(filters, tabs[1], 1f);
@@ -638,7 +644,7 @@ public final class MainActivity extends Activity {
         search.setTextSize(14);
         search.setTextColor(TEXT);
         search.setHintTextColor(MUTED);
-        search.setHint(shortLandscape ? "채널 검색" : "채널명·지역·장르 검색");
+        search.setHint(shortLandscape ? getString(R.string.search) : getString(R.string.search_detail));
         search.setBackground(shape(BG, LINE, 9));
         search.setPadding(dp(10), 0, dp(10), 0);
         search.setMinimumHeight(dp(44));
@@ -648,10 +654,10 @@ public final class MainActivity extends Activity {
             @Override public void afterTextChanged(Editable s) {}
         });
         searchRow.addView(search, new LinearLayout.LayoutParams(0, dp(44), 1));
-        groupButton = button("방송사 ▾", view -> chooseGroup());
-        groupButton.setContentDescription("방송사 선택");
+        groupButton = button(getString(R.string.broadcaster_menu), view -> chooseGroup());
+        groupButton.setContentDescription(getString(R.string.broadcaster_select));
         side(searchRow, groupButton);
-        Button add = button("+ 추가", view -> addStation());
+        Button add = button(getString(R.string.add_station_short), view -> addStation());
         side(searchRow, add);
         spaceAbove(library, searchRow, 5);
         stationCount = label("", 12, MUTED, false);
@@ -660,7 +666,7 @@ public final class MainActivity extends Activity {
 
         stationList = new ListView(this);
         stationList.setDivider(null);
-        stationList.setContentDescription("방송국 목록");
+        stationList.setContentDescription(getString(R.string.station_list));
         adapter = new StationAdapter();
         stationList.setAdapter(adapter);
         stationList.setOnItemClickListener((parent, view, position, id) -> {
@@ -688,7 +694,7 @@ public final class MainActivity extends Activity {
     private void render() {
         if ((library.getVisibility() == View.VISIBLE) != listVisible) playerScroll.setLayoutParams(playerLayout());
         library.setVisibility(listVisible ? View.VISIBLE : View.GONE);
-        listToggle.setText(listVisible ? "채널 목록 ON" : "채널 목록 OFF");
+        listToggle.setText(listVisible ? getString(R.string.channels_on) : getString(R.string.channels_off));
         styleToggle(listToggle, listVisible);
         if (radio == null) {
             for (Button control : new Button[] {previous, play, next, identify, automatic, youtube, star, tools, history, sleepPlus, sleepClear}) enable(control, false);
@@ -705,16 +711,16 @@ public final class MainActivity extends Activity {
             renderedCountry = filter;
             group = "";
         }
-        countryButton.setText((filter.isEmpty() ? "모든 국가" : RadioCatalog.countryName(filter)) + " ▾");
+        countryButton.setText((filter.isEmpty() ? getString(R.string.all_countries) : RadioCatalog.countryName(this, filter)) + " ▾");
         boolean local = radio.localPlayback;
-        String nation = RadioCatalog.countryName(station.country());
-        showReadout(bandIndicator, local ? "FILE · 저장된 음악" : (radio.favoriteTuning ? "FAV · " : "BAND · ")
-            + (filter.isEmpty() ? "모든 국가" : RadioCatalog.countryName(filter)));
-        showReadout(title, local ? radio.localTitle() : songDisplay ? (radio.track == null ? "곡 정보" : radio.track.title()) : station.name());
+        String nation = RadioCatalog.countryName(this, station.country());
+        showReadout(bandIndicator, local ? getString(R.string.playing_files) : (radio.favoriteTuning ? "FAV · " : "BAND · ")
+            + (filter.isEmpty() ? getString(R.string.all_countries) : RadioCatalog.countryName(this, filter)));
+        showReadout(title, local ? radio.localTitle() : songDisplay ? (radio.track == null ? getString(R.string.track_info) : radio.track.title()) : station.name());
         showReadout(countryName, local ? radio.localPosition() : songDisplay && radio.track != null ? radio.track.artist() : nation);
         showReadout(playbackStatus, radio.status);
         star.setText(radio.favorites.contains(station.id()) ? "★" : "☆");
-        play.setText(radio.isRequested() ? "■ 정지" : "▶ 재생");
+        play.setText(radio.isRequested() ? getString(R.string.stop) : getString(R.string.play));
         enable(play, true);
         enable(star, !local);
         enable(tools, true);
@@ -722,8 +728,8 @@ public final class MainActivity extends Activity {
         boolean seekable = radio.localSeekTarget() != null;
         enable(previous, radio.canStep(-1) || seekable);
         enable(next, canStep || seekable);
-        previous.setContentDescription(local ? "짧게 이전 곡, 길게 되감기" : "이전 채널");
-        next.setContentDescription(local ? "짧게 다음 곡, 길게 빨리감기" : "다음 채널");
+        previous.setContentDescription(local ? getString(R.string.seek_previous) : getString(R.string.previous_channel));
+        next.setContentDescription(local ? getString(R.string.seek_next) : getString(R.string.next_channel));
         var previousStation = radio.previousStation();
         enable(recallKey, !local && previousStation != null && !previousStation.id().equals(station.id()));
         showReadout(trackTitle, local ? radio.localTimeline() : songDisplay ? station.name() + " · " + nation
@@ -735,13 +741,13 @@ public final class MainActivity extends Activity {
         enable(scanKey, !local && (radio.scanning || canStep));
         enable(favoriteKey, !local);
         styleToggle(favoriteKey, radio.favoriteTuning);
-        favoriteKey.setContentDescription(radio.favoriteTuning ? "FAV 즐겨찾기 청취 켜짐" : "FAV 즐겨찾기 청취 꺼짐");
+        favoriteKey.setContentDescription(radio.favoriteTuning ? getString(R.string.fav_on_accessible) : getString(R.string.fav_off_accessible));
         styleToggle(scanKey, radio.scanning);
-        scanKey.setContentDescription(radio.scanning ? "SCAN 탐색 중지" : "SCAN 채널 탐색");
+        scanKey.setContentDescription(radio.scanning ? getString(R.string.scan_stop) : getString(R.string.scan_start));
         styleToggle(displayKey, songDisplay);
-        displayKey.setContentDescription(songDisplay ? "DISP 곡 정보 모드" : "DISP 채널 정보 모드");
+        displayKey.setContentDescription(songDisplay ? getString(R.string.disp_track) : getString(R.string.disp_station));
         renderPresets();
-        automatic.setText(radio.automatic ? "자동 켜짐" : "자동 꺼짐");
+        automatic.setText(radio.automatic ? getString(R.string.auto_on) : getString(R.string.auto_off));
         if (Boolean.TRUE.equals(automatic.getTag()) != radio.automatic || automatic.getTag() == null) {
             styleButton(automatic, radio.automatic);
             automatic.setTag(radio.automatic);
@@ -766,7 +772,7 @@ public final class MainActivity extends Activity {
         if (radio != null && radio.sleepUntil > now && (now - radio.sleepViewSince) / 5000 % 2 == 0) {
             long seconds = (radio.sleepUntil - now + 999) / 1000;
             sleepRemaining.showTime(String.format(Locale.ROOT, "%02d:%02d:%02d", seconds / 3600,
-                seconds / 60 % 60, seconds % 60), true, "취침 타이머 남은 시간", "");
+                seconds / 60 % 60, seconds % 60), true, getString(R.string.timer_remaining), "");
             return;
         }
         String id = radio == null || radio.localPlayback ? "" : radio.station.timeZone();
@@ -782,7 +788,7 @@ public final class MainActivity extends Activity {
         }
         ZonedDateTime local = ZonedDateTime.now(zone);
         sleepRemaining.showTime(local.format(CLOCK_FORMAT), false,
-            stationTime ? "방송국 현지 시각" : "기기 현지 시각", local.getHour() < 12 ? "AM" : "PM");
+            stationTime ? getString(R.string.station_local_time) : getString(R.string.device_local_time), local.getHour() < 12 ? "AM" : "PM");
     }
 
     private void updateLcdBrightness() {
@@ -792,12 +798,12 @@ public final class MainActivity extends Activity {
             default -> gradient(LCD_TOP, LCD_BOTTOM, 0xff819a39, 4);
         });
         String level = switch (lcdLevel) {
-            case 1 -> "어둡게";
-            case 2 -> "아주 어둡게";
-            default -> "기본";
+            case 1 -> getString(R.string.dim_level_one);
+            case 2 -> getString(R.string.dim_level_two);
+            default -> getString(R.string.dim_level_zero);
         };
-        dimKey.setContentDescription("DIM LCD 밝기 · " + level);
-        dimKey.setTooltipText("LCD 밝기 · " + level);
+        dimKey.setContentDescription(getString(R.string.dim_accessible, level));
+        dimKey.setTooltipText(getString(R.string.dim_tooltip, level));
         styleToggle(dimKey, lcdLevel != 0);
     }
 
@@ -821,9 +827,9 @@ public final class MainActivity extends Activity {
                 if (entry.id().equals(id)) { stored = entry; break; }
             }
             boolean hidden = stored != null && radio.hidden.contains(id);
-            String name = stored == null ? "비어 있음" : stored.name() + (hidden ? " (숨김)" : "");
-            key.setContentDescription("프리셋 " + (index + 1) + " · " + name);
-            key.setTooltipText(name + " · 짧게 눌러 재생, 길게 눌러 저장");
+            String name = stored == null ? getString(R.string.empty_preset) : stored.name() + (hidden ? getString(R.string.hidden_suffix) : "");
+            key.setContentDescription(getString(R.string.preset_label, index + 1, name));
+            key.setTooltipText(getString(R.string.preset_tip, name));
             styleToggle(key, stored != null && !hidden);
             enable(key, true);
         }
@@ -832,8 +838,8 @@ public final class MainActivity extends Activity {
     private void recallPreset(int index) {
         if (radio == null || radio.recallPreset(index) != null) return;
         String message = radio.hidden.contains(radio.presetId(index))
-            ? "숨긴 채널입니다. 숨긴 채널 탭에서 다시 표시할 수 있어요."
-            : (index + 1) + "번을 길게 눌러 지금 채널을 저장하세요.";
+            ? getString(R.string.hidden_station_hint)
+            : getString(R.string.preset_hold, index + 1);
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
@@ -850,8 +856,8 @@ public final class MainActivity extends Activity {
             if (!RadioLibrary.matchesWords(station, words)) continue;
             rows.add(new StationRow(station, favorite, station.id().equals(radio.station.id())));
         }
-        stationCount.setText(rows.isEmpty() ? "조건에 맞는 채널이 없어요." : rows.size() + "개 채널");
-        groupButton.setText(group.isEmpty() ? "방송사 ▾" : group + " ▾");
+        stationCount.setText(rows.isEmpty() ? getString(R.string.no_matching_stations) : getResources().getQuantityString(R.plurals.station_count, rows.size(), rows.size()));
+        groupButton.setText(group.isEmpty() ? getString(R.string.broadcaster_menu) : group + " ▾");
         for (int i = 0; i < tabs.length; i++) {
             boolean active = i == mode;
             if (!(tabs[i].getTag() instanceof Boolean) || (boolean) tabs[i].getTag() != active) {
@@ -869,8 +875,8 @@ public final class MainActivity extends Activity {
 
     private void chooseCountry() {
         if (radio == null) return;
-        new AlertDialog.Builder(this).setTitle("국가 선택")
-            .setItems(RadioCatalog.COUNTRIES, (dialog, index) -> radio.setCountry(RadioCatalog.COUNTRY_CODES[index]))
+        new AlertDialog.Builder(this).setTitle(getString(R.string.choose_country))
+            .setItems(RadioCatalog.countryNames(this), (dialog, index) -> radio.setCountry(RadioCatalog.COUNTRY_CODES[index]))
             .show();
     }
 
@@ -881,9 +887,9 @@ public final class MainActivity extends Activity {
             if (radio.country.isEmpty() || radio.country.equals(entry.country())) groups.add(entry.group());
         }
         ArrayList<String> values = new ArrayList<>();
-        values.add("모든 방송사");
+        values.add(getString(R.string.all_broadcasters));
         values.addAll(groups);
-        new AlertDialog.Builder(this).setTitle("방송사 선택").setItems(values.toArray(new String[0]), (dialog, i) -> {
+        new AlertDialog.Builder(this).setTitle(getString(R.string.broadcaster_select)).setItems(values.toArray(new String[0]), (dialog, i) -> {
             group = i == 0 ? "" : values.get(i);
             refreshList();
         }).show();
@@ -892,19 +898,19 @@ public final class MainActivity extends Activity {
     private void stationMenu(View anchor, RadioCatalog.Station station) {
         if (radio == null) return;
         PopupMenu menu = new PopupMenu(this, anchor);
-        menu.getMenu().add(0, 1, 0, radio.favorites.contains(station.id()) ? "즐겨찾기 해제" : "즐겨찾기 추가");
-        menu.getMenu().add(0, 2, 0, radio.hidden.contains(station.id()) ? "다시 표시" : "채널 숨기기");
-        if (!station.homepage().isEmpty()) menu.getMenu().add(0, 3, 0, "방송국 공식 사이트");
-        if (station.id().startsWith("custom-")) menu.getMenu().add(0, 4, 0, "직접 추가한 채널 삭제");
+        menu.getMenu().add(0, 1, 0, radio.favorites.contains(station.id()) ? getString(R.string.remove_favorite) : getString(R.string.add_favorite));
+        menu.getMenu().add(0, 2, 0, radio.hidden.contains(station.id()) ? getString(R.string.show_again) : getString(R.string.hide_station));
+        if (!station.homepage().isEmpty()) menu.getMenu().add(0, 3, 0, getString(R.string.station_website));
+        if (station.id().startsWith("custom-")) menu.getMenu().add(0, 4, 0, getString(R.string.remove_custom));
         menu.setOnMenuItemClickListener(item -> {
             if (radio == null) return false;
             switch (item.getItemId()) {
                 case 1 -> radio.toggleFavorite(station.id());
                 case 2 -> radio.toggleHidden(station.id());
                 case 3 -> open(Uri.parse(station.homepage()));
-                case 4 -> new AlertDialog.Builder(this).setMessage(station.name() + " 채널을 삭제할까요?")
-                    .setNegativeButton("취소", null)
-                    .setPositiveButton("삭제", (d, i) -> { if (radio != null) radio.removeStation(station); }).show();
+                case 4 -> new AlertDialog.Builder(this).setMessage(getString(R.string.delete_confirmation, station.name()))
+                    .setNegativeButton(getString(R.string.cancel), null)
+                    .setPositiveButton(getString(R.string.delete), (d, i) -> { if (radio != null) radio.removeStation(station); }).show();
             }
             return true;
         });
@@ -916,20 +922,20 @@ public final class MainActivity extends Activity {
         LinearLayout fields = column();
         fields.setPadding(dp(20), dp(4), dp(20), dp(4));
         EditText name = new EditText(this);
-        name.setHint("방송국 이름");
+        name.setHint(getString(R.string.station_name));
         name.setSingleLine();
         fields.addView(name);
         EditText address = new EditText(this);
-        address.setHint("MP3·AAC·HLS 스트리밍 주소");
+        address.setHint(getString(R.string.stream_hint));
         address.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_URI);
         address.setSingleLine();
         fields.addView(address);
-        AlertDialog dialog = new AlertDialog.Builder(this).setTitle("내 채널 추가").setView(fields)
-            .setNegativeButton("취소", null).setPositiveButton("추가", null).create();
+        AlertDialog dialog = new AlertDialog.Builder(this).setTitle(getString(R.string.add_custom)).setView(fields)
+            .setNegativeButton(getString(R.string.cancel), null).setPositiveButton(getString(R.string.add), null).create();
         dialog.setOnShowListener(ignored -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(view -> {
             if (radio == null) return;
             String title = name.getText().toString().trim();
-            if (title.isEmpty()) { name.setError("방송국 이름을 입력하세요."); return; }
+            if (title.isEmpty()) { name.setError(getString(R.string.missing_station_name)); return; }
             try {
                 radio.addStation(title.substring(0, Math.min(80, title.length())), address.getText().toString());
                 group = "";
@@ -938,7 +944,7 @@ public final class MainActivity extends Activity {
                 setMode(ALL);
                 dialog.dismiss();
             } catch (Exception error) {
-                address.setError("HTTP 또는 HTTPS 스트리밍 주소를 확인하세요.");
+                address.setError(getString(R.string.invalid_stream));
             }
         }));
         dialog.show();
@@ -949,15 +955,15 @@ public final class MainActivity extends Activity {
             .setItems(new String[]{"YouTube Music", "Spotify"}, (dialog, index) -> {
                 if (index == 0) open(track.youtubeMusic());
                 else openSpotify(track);
-            }).setNegativeButton("닫기", null).show();
+            }).setNegativeButton(getString(R.string.close), null).show();
     }
 
     private void showTrackHistory() {
         if (radio == null) return;
         List<TrackHistory.Entry> entries = radio.trackHistory();
-        var dialog = new AlertDialog.Builder(this).setTitle("곡 기록").setPositiveButton("닫기", null);
+        var dialog = new AlertDialog.Builder(this).setTitle(getString(R.string.track_history)).setPositiveButton(getString(R.string.close), null);
         if (entries.isEmpty()) {
-            dialog.setMessage("아직 기록된 곡이 없어요.");
+            dialog.setMessage(getString(R.string.empty_history));
         } else {
             var date = android.text.format.DateFormat.getDateFormat(this);
             var time = android.text.format.DateFormat.getTimeFormat(this);
@@ -978,20 +984,37 @@ public final class MainActivity extends Activity {
         LinearLayout view = column();
         view.setPadding(dp(22), dp(6), dp(22), dp(14));
         CheckBox autoplay = new CheckBox(this);
-        autoplay.setText("다음 실행 시 마지막 방송 자동 재생");
+        autoplay.setText(getString(R.string.autoplay));
         autoplay.setChecked(active.autoplay);
         autoplay.setOnCheckedChangeListener((button, checked) -> active.setAutoplay(checked));
         view.addView(autoplay);
+        var dialog = new AlertDialog.Builder(this).setTitle(getString(R.string.playback_settings))
+            .setView(view).setPositiveButton(getString(R.string.close), null).create();
+        spaceAbove(view, button(getString(R.string.language), button -> {
+            dialog.dismiss();
+            chooseLanguage();
+        }), 6);
         if (!active.station.homepage().isEmpty()) {
-            spaceAbove(view, button("현재 방송국 공식 사이트 ↗", b -> open(Uri.parse(active.station.homepage()))), 6);
+            spaceAbove(view, button(getString(R.string.open_station_website), b -> open(Uri.parse(active.station.homepage()))), 6);
         }
-        new AlertDialog.Builder(this).setTitle("재생 설정").setView(view).setPositiveButton("닫기", null).show();
+        dialog.show();
+    }
+
+    private void chooseLanguage() {
+        String[] tags = {"", "ko", "en", "ja", "zh-Hans"};
+        String[] labels = {getString(R.string.system_language), "한국어", "English", "日本語", "简体中文"};
+        int selected = java.util.Arrays.asList(tags).indexOf(AppLanguage.selected(this));
+        new AlertDialog.Builder(this).setTitle(getString(R.string.language))
+            .setSingleChoiceItems(labels, selected, (dialog, index) -> {
+                dialog.dismiss();
+                AppLanguage.select(this, tags[index]);
+            }).setNegativeButton(getString(R.string.cancel), null).show();
     }
 
     private void open(Uri uri) {
         try { startActivity(new Intent(Intent.ACTION_VIEW, uri)); }
         catch (android.content.ActivityNotFoundException error) {
-            Toast.makeText(this, "이 링크를 열 앱을 찾지 못했어요.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.no_link_handler), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -1202,14 +1225,14 @@ public final class MainActivity extends Activity {
             addView(labels, weighted());
             menu = label("⋮", 21, MUTED, true);
             menu.setGravity(Gravity.CENTER);
-            menu.setContentDescription("채널 메뉴");
+            menu.setContentDescription(getString(R.string.station_menu));
             menu.setFocusable(false);
             addView(menu, new LinearLayout.LayoutParams(dp(38), dp(42)));
         }
         void bind(StationRow row) {
             RadioCatalog.Station entry = row.station();
             name.setText((row.favorite() ? "★  " : "") + entry.name());
-            description.setText(RadioCatalog.countryName(entry.country()) + "  ·  " + entry.description());
+            description.setText(RadioCatalog.countryName(MainActivity.this, entry.country()) + "  ·  " + entry.description());
             setBackground(new RippleDrawable(ColorStateList.valueOf(0x40889c64),
                 shape(row.current() ? 0xff303a25 : CARD, row.current() ? 0xff71834f : 0, 5), null));
             menu.setOnClickListener(view -> stationMenu(view, entry));
