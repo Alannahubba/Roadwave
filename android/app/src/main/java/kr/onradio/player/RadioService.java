@@ -847,7 +847,11 @@ public final class RadioService extends MediaLibraryService implements Player.Li
                 if (entry.id().equals(station.id())) {
                     current = entries.size();
                     String detail = track == null ? null : track.title() + " · " + track.artist();
-                    if (detail == null && carRecognitionUntil > SystemClock.elapsedRealtime()) detail = trackStatus;
+                    // In-car recognition can update every second. Keep transient status
+                    // out of queue metadata so the host need not redraw the queue.
+                    if (detail == null && carRecognitionUntil > SystemClock.elapsedRealtime()) {
+                        detail = localizedString(R.string.recognize);
+                    }
                     if (detail != null) {
                         item = item.buildUpon().setMediaMetadata(item.mediaMetadata.buildUpon().setArtist(detail).build()).build();
                     }

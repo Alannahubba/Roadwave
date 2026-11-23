@@ -22,12 +22,14 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 @OptIn(markerClass = UnstableApi.class)
 final class RadioLibrary implements MediaLibrarySession.Callback {
-    static final Uri RADIO_ARTWORK = Uri.parse("android.resource://kr.onradio.player/drawable/radio_artwork");
+    static final Uri RADIO_ARTWORK = Uri.parse("android.resource://kr.onradio.player/drawable/roadwave_artwork");
     private static final String ROOT = "root", COUNTRIES = "countries";
     static final String ALL = "all", FAVORITES = "favorites";
     private static final String COUNTRY_PREFIX = "country:", FAVORITE_COUNTRY_PREFIX = "favorites:";
@@ -38,6 +40,7 @@ final class RadioLibrary implements MediaLibrarySession.Callback {
     private static final SessionCommand FAVORITE = new SessionCommand(FAVORITE_ACTION, Bundle.EMPTY);
     private static final SessionCommand HIDE = new SessionCommand(HIDE_ACTION, Bundle.EMPTY);
     private final RadioService radio;
+    private final Map<String, List<MediaItem>> browsedLists = new HashMap<>();
     private List<CommandButton> buttons = List.of();
     private boolean starred, hidden;
 
@@ -101,6 +104,16 @@ final class RadioLibrary implements MediaLibrarySession.Callback {
 
     @Override public ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> onGetChildren(MediaLibrarySession session,
             MediaSession.ControllerInfo browser, String parent, int page, int pageSize, LibraryParams params) {
+        List<MediaItem> items = children(parent);
+        if (ROOT.equals(parent) || COUNTRIES.equals(parent) || ALL.equals(parent)
+                || FAVORITES.equals(parent) || parent.startsWith(COUNTRY_PREFIX)
+                && List.of(RadioCatalog.COUNTRY_CODES).contains(parent.substring(COUNTRY_PREFIX.length()))) {
+            browsedLists.put(parent, items);
+        }
+        return childPage(items, page, pageSize, params);
+    }
+
+    private List<MediaItem> children(String parent) {
         var items = new ArrayList<MediaItem>();
         if (ROOT.equals(parent)) {
             items.add(folder(ALL, radio.localizedString(R.string.all_stations)));
@@ -113,7 +126,7 @@ final class RadioLibrary implements MediaLibrarySession.Callback {
         } else {
             for (RadioCatalog.Station entry : queue(parent)) items.add(playable(radio.languageContext(), entry, parent));
         }
-        return childPage(items, page, pageSize, params);
+        return items;
     }
 
     @Override public ListenableFuture<LibraryResult<MediaItem>> onGetItem(MediaLibrarySession session,
@@ -237,21 +250,11 @@ final class RadioLibrary implements MediaLibrarySession.Callback {
     }
 
     void changed(MediaLibrarySession session) {
-        int available = 0, favorites = 0;
-        for (RadioCatalog.Station entry : radio.stations) {
-            if (radio.hidden.contains(entry.id())) continue;
-            available++;
-            if (radio.favorites.contains(entry.id())) favorites++;
-        }
-        session.notifyChildrenChanged(ALL, available, null);
-        session.notifyChildrenChanged(FAVORITES, favorites, null);
-        for (int i = 1; i < RadioCatalog.COUNTRY_CODES.length; i++) {
-            String code = RadioCatalog.COUNTRY_CODES[i];
-            int count = 0;
-            for (RadioCatalog.Station entry : radio.stations) {
-                if (code.equals(entry.country()) && !radio.hidden.contains(entry.id())) count++;
+        for (String parent : List.copyOf(browsedLists.keySet())) {
+            List<MediaItem> updated = children(parent);
+            if (!updated.equals(browsedLists.put(parent, updated))) {
+                session.notifyChildrenChanged(parent, updated.size(), null);
             }
-            session.notifyChildrenChanged(COUNTRY_PREFIX + code, count, null);
         }
     }
 
